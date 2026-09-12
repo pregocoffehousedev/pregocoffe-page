@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  /* Azulejo metro: tamaño del mosaico (2 filas de piezas) */
+  --tile-w: 200px;
+  --tile-face: #f7f6f3;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --tile-w: 150px;
+  }
+}
+
+body {
+  @apply bg-durazno-50 text-cafe-900 antialiased;
+}
+
+/**
+ * Muro de azulejo metro (subway tile) con acabado cerámico.
+ *
+ * Se compone de tres capas, todas CSS (sin peticiones de red):
+ *   1. SVG data-URI  → lechada oscura + bisel de cada pieza
+ *   2. ::before      → brillo especular diagonal (el esmalte)
+ *   3. ::after       → iluminación general del muro
+ *
+ * El bisel es lo que vende la cerámica: cada pieza lleva un borde claro
+ * arriba/izquierda y uno oscuro abajo/derecha, como una loza real
+ * tomando la luz desde arriba.
+ */
+.tile-wall {
+  background-color: #3b3833;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='92' height='46' viewBox='0 0 92 46'><rect width='92' height='46' fill='%233b3833'/><rect x='1.2' y='1.2' width='43.6' height='20.6' rx='0.5' fill='%23f7f6f3'/><path d='M2.2 20.8V2.2H43.8' fill='none' stroke='%23ffffff' stroke-opacity='.85' stroke-width='1.8'/><path d='M2.2 20.8H43.8V2.2' fill='none' stroke='%23241f19' stroke-opacity='.14' stroke-width='1.8'/><rect x='47.2' y='1.2' width='43.6' height='20.6' rx='0.5' fill='%23f7f6f3'/><path d='M48.2 20.8V2.2H89.8' fill='none' stroke='%23ffffff' stroke-opacity='.85' stroke-width='1.8'/><path d='M48.2 20.8H89.8V2.2' fill='none' stroke='%23241f19' stroke-opacity='.14' stroke-width='1.8'/><rect x='-21.8' y='24.2' width='43.6' height='20.6' rx='0.5' fill='%23f7f6f3'/><path d='M-20.8 43.8V25.2H20.8' fill='none' stroke='%23ffffff' stroke-opacity='.85' stroke-width='1.8'/><path d='M-20.8 43.8H20.8V25.2' fill='none' stroke='%23241f19' stroke-opacity='.14' stroke-width='1.8'/><rect x='24.2' y='24.2' width='43.6' height='20.6' rx='0.5' fill='%23f7f6f3'/><path d='M25.2 43.8V25.2H66.8' fill='none' stroke='%23ffffff' stroke-opacity='.85' stroke-width='1.8'/><path d='M25.2 43.8H66.8V25.2' fill='none' stroke='%23241f19' stroke-opacity='.14' stroke-width='1.8'/><rect x='70.2' y='24.2' width='43.6' height='20.6' rx='0.5' fill='%23f7f6f3'/><path d='M71.2 43.8V25.2H112.8' fill='none' stroke='%23ffffff' stroke-opacity='.85' stroke-width='1.8'/><path d='M71.2 43.8H112.8V25.2' fill='none' stroke='%23241f19' stroke-opacity='.14' stroke-width='1.8'/></svg>");
+  background-size: var(--tile-w) calc(var(--tile-w) / 2);
+  background-repeat: repeat;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Brillo especular: barrido diagonal que simula el esmalte reflejando luz */
+.tile-wall::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(
+      118deg,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 255, 255, 0.14) 18%,
+      transparent 38%,
+      transparent 62%,
+      rgba(255, 255, 255, 0.22) 82%,
+      rgba(255, 255, 255, 0.06) 100%
+    );
+  mix-blend-mode: soft-light;
+}
+
+/* Iluminación del muro: foco arriba, sombra al pie */
+.tile-wall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      130% 90% at 50% -8%,
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(255, 255, 255, 0.16) 42%,
+      transparent 68%
+    ),
+    linear-gradient(180deg, transparent 48%, rgba(28, 26, 22, 0.14) 100%);
+}
+
+/*
+ * El contenido del hero va sobre todas las capas de acabado.
+ * Se excluyen los elementos decorativos (aria-hidden), que necesitan
+ * conservar su `position: absolute` para funcionar como capa de velo.
+ */
+.tile-wall > *:not([aria-hidden='true']) {
+  position: relative;
+  z-index: 1;
+}

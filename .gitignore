@@ -1,0 +1,10 @@
+node_modules
+.next
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Originales sin optimizar de la galería (20 MB). Fuera de public/ para que
+# no lleguen al deploy; las versiones servidas están en public/galeria/fotos/.
+originales-fotos/

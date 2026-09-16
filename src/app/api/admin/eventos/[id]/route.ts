@@ -9,7 +9,10 @@ export const dynamic = 'force-dynamic'
 const Body = z.object({
   nombre: z.string().trim().min(1).max(120).optional(),
   descripcion: z.string().trim().max(2000).optional().or(z.literal('')),
+  categoria: z.enum(['bingo', 'taller']).optional(),
+  instructor: z.string().trim().max(120).optional().or(z.literal('')),
   fecha: z.string().min(1).optional(),
+  ventaAbreEn: z.string().min(1).nullable().optional(),
   lugar: z.string().trim().min(1).max(160).optional(),
   precio_clp: z.number().int().min(1).optional(),
   capacidad_total: z.number().int().min(1).optional(),
@@ -55,11 +58,15 @@ export async function PATCH(
     }
   }
 
+  const { ventaAbreEn, ...resto } = cambios
+
   const { data, error } = await db
     .from('eventos')
     .update({
-      ...cambios,
+      ...resto,
       descripcion: cambios.descripcion === '' ? null : cambios.descripcion,
+      instructor: cambios.instructor === '' ? null : cambios.instructor,
+      ...(ventaAbreEn !== undefined ? { venta_abre_en: ventaAbreEn } : {}),
     })
     .eq('id', id)
     .select()
@@ -71,4 +78,35 @@ export async function PATCH(
   }
 
   return NextResponse.json({ evento: data })
+}
+
+// Eliminar un evento. Si ya tiene reservas asociadas, la base lo rechaza
+// (FK `on delete restrict`) para no perder historial de ventas.
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  }
+
+  const { id } = await params
+  const db = supabaseAdmin()
+
+  const { error } = await db.from('eventos').delete().eq('id', id)
+
+  if (error) {
+    const bloqueadoPorReservas = error.code === '23503'
+    console.error('[admin/eventos/:id] DELETE error', error)
+    return NextResponse.json(
+      {
+        error: bloqueadoPorReservas
+          ? 'No se puede eliminar: ya tiene reservas asociadas. Desactívalo en vez de eliminarlo.'
+          : 'No pudimos eliminar el evento.',
+      },
+      { status: 400 },
+    )
+  }
+
+  return NextResponse.json({ ok: true })
 }

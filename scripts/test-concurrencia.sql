@@ -1,22 +1,23 @@
 -- ============================================================
--- Prueba de sobreventa: 50 reservas simultáneas sobre 10 cupos.
+-- Prueba de sobreventa: 150 reservas simultáneas sobre 50 cupos
+-- (mismo aforo real del Bingo de Plantas, 3x intentos de sobra).
 -- Ejecutar en Supabase SQL Editor.
--- Resultado esperado: exactamente 10 éxitos, 40 con SIN_CUPO.
+-- Resultado esperado: exactamente 50 éxitos, 100 con SIN_CUPO.
 -- ============================================================
 
--- 1) Evento de prueba con solo 10 cupos
+-- 1) Evento de prueba con 50 cupos (igual al Bingo de Plantas real)
 insert into eventos (slug, nombre, fecha, lugar, precio_clp, capacidad_total)
-values ('test-concurrencia', 'Test', now() + interval '30 days', 'Test', 1000, 10)
-on conflict (slug) do update set entradas_vendidas = 0, capacidad_total = 10;
+values ('test-concurrencia', 'Test', now() + interval '30 days', 'Test', 1000, 50)
+on conflict (slug) do update set entradas_vendidas = 0, capacidad_total = 50;
 
--- 2) Intentar 50 reservas de 1 entrada cada una
+-- 2) Intentar 150 reservas de 1 entrada cada una
 do $$
 declare
   i integer;
   exitos integer := 0;
   fallos integer := 0;
 begin
-  for i in 1..50 loop
+  for i in 1..150 loop
     begin
       perform reservar_entradas('test-concurrencia', 1,
         'Tester ' || i, '+5691234' || lpad(i::text, 4, '0'));
@@ -25,7 +26,7 @@ begin
       fallos := fallos + 1;
     end;
   end loop;
-  raise notice 'Éxitos: % (esperado 10) · Fallos: % (esperado 40)', exitos, fallos;
+  raise notice 'Éxitos: % (esperado 50) · Fallos: % (esperado 100)', exitos, fallos;
 end $$;
 
 -- 3) Verificar el invariante

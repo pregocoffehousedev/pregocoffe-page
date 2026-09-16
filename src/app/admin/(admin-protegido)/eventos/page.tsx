@@ -3,12 +3,22 @@
 import { useEffect, useState } from 'react'
 import { clp, fechaLarga } from '@/lib/format'
 
+type Categoria = 'bingo' | 'taller'
+
+const CATEGORIAS: readonly { valor: Categoria; label: string }[] = [
+  { valor: 'bingo', label: 'Bingo' },
+  { valor: 'taller', label: 'Taller' },
+]
+
 type Evento = {
   id: string
   slug: string
   nombre: string
   descripcion: string | null
+  categoria: Categoria
+  instructor: string | null
   fecha: string
+  venta_abre_en: string | null
   lugar: string
   precio_clp: number
   capacidad_total: number
@@ -21,7 +31,10 @@ type FormEvento = {
   slug: string
   nombre: string
   descripcion: string
+  categoria: Categoria
+  instructor: string
   fecha: string
+  ventaAbreEn: string
   lugar: string
   precio_clp: string
   capacidad_total: string
@@ -33,7 +46,10 @@ const FORM_VACIO: FormEvento = {
   slug: '',
   nombre: '',
   descripcion: '',
+  categoria: 'bingo',
+  instructor: '',
   fecha: '',
+  ventaAbreEn: '',
   lugar: '',
   precio_clp: '',
   capacidad_total: '',
@@ -58,6 +74,8 @@ export default function EventosAdminPage() {
   const [editando, setEditando] = useState<string | null>(null) // id del evento, o 'nuevo'
   const [form, setForm] = useState<FormEvento>(FORM_VACIO)
   const [guardando, setGuardando] = useState(false)
+  const [eliminando, setEliminando] = useState<string | null>(null)
+  const [filtro, setFiltro] = useState<Categoria | 'todas'>('todas')
 
   async function cargar() {
     setCargando(true)
@@ -91,7 +109,10 @@ export default function EventosAdminPage() {
       slug: ev.slug,
       nombre: ev.nombre,
       descripcion: ev.descripcion ?? '',
+      categoria: ev.categoria,
+      instructor: ev.instructor ?? '',
       fecha: aInputDatetime(ev.fecha),
+      ventaAbreEn: ev.venta_abre_en ? aInputDatetime(ev.venta_abre_en) : '',
       lugar: ev.lugar,
       precio_clp: String(ev.precio_clp),
       capacidad_total: String(ev.capacidad_total),
@@ -110,7 +131,10 @@ export default function EventosAdminPage() {
       slug: form.slug,
       nombre: form.nombre,
       descripcion: form.descripcion,
+      categoria: form.categoria,
+      instructor: form.instructor,
       fecha: new Date(form.fecha).toISOString(),
+      ventaAbreEn: form.ventaAbreEn ? new Date(form.ventaAbreEn).toISOString() : null,
       lugar: form.lugar,
       precio_clp: Number(form.precio_clp),
       capacidad_total: Number(form.capacidad_total),
@@ -161,6 +185,25 @@ export default function EventosAdminPage() {
     }
   }
 
+  async function eliminar(ev: Evento) {
+    if (!confirm(`¿Eliminar "${ev.nombre}"? Esta acción no se puede deshacer.`)) return
+    setError(null)
+    setEliminando(ev.id)
+    try {
+      const res = await fetch(`/api/admin/eventos/${ev.id}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'No pudimos eliminar el evento.')
+        setEliminando(null)
+        return
+      }
+      await cargar()
+    } catch {
+      setError('Sin conexión.')
+    }
+    setEliminando(null)
+  }
+
   const label = 'block text-sm font-medium text-salvia-700'
   const input =
     'mt-1.5 w-full rounded-lg border border-salvia-100 bg-white px-3 py-2.5 text-cafe-900 outline-none focus:border-salvia-400'
@@ -196,6 +239,21 @@ export default function EventosAdminPage() {
           </label>
 
           <label className={label}>
+            Categoría
+            <select
+              value={form.categoria}
+              onChange={(e) => setForm({ ...form, categoria: e.target.value as Categoria })}
+              className={input}
+            >
+              {CATEGORIAS.map((c) => (
+                <option key={c.valor} value={c.valor}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className={label}>
             Descripción
             <textarea
               rows={3}
@@ -204,6 +262,18 @@ export default function EventosAdminPage() {
               className={`${input} resize-none`}
             />
           </label>
+
+          {form.categoria === 'taller' && (
+            <label className={label}>
+              Instructor (quién lo imparte)
+              <input
+                value={form.instructor}
+                onChange={(e) => setForm({ ...form, instructor: e.target.value })}
+                className={input}
+                placeholder="Equipo Prego, o el nombre del instructor invitado"
+              />
+            </label>
+          )}
 
           <div className="grid gap-4 sm:grid-cols-2">
             <label className={label}>
@@ -226,6 +296,21 @@ export default function EventosAdminPage() {
               />
             </label>
           </div>
+
+          <label className={label}>
+            Venta de entradas abre el (opcional)
+            <input
+              type="datetime-local"
+              value={form.ventaAbreEn}
+              onChange={(e) => setForm({ ...form, ventaAbreEn: e.target.value })}
+              className={input}
+            />
+            <span className="mt-1 block text-xs font-normal text-cafe-400">
+              Si lo dejas vacío, las entradas se pueden comprar de inmediato. Si
+              pones una fecha futura, el sitio muestra un contador regresivo hasta
+              esa fecha y bloquea las compras hasta entonces.
+            </span>
+          </label>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <label className={label}>
@@ -310,6 +395,22 @@ export default function EventosAdminPage() {
         </button>
       </div>
 
+      <div className="mt-4 flex flex-wrap gap-2">
+        {(['todas', ...CATEGORIAS.map((c) => c.valor)] as const).map((valor) => (
+          <button
+            key={valor}
+            onClick={() => setFiltro(valor)}
+            className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+              filtro === valor
+                ? 'bg-salvia-600 text-white'
+                : 'border border-salvia-100 text-salvia-700 hover:bg-salvia-50'
+            }`}
+          >
+            {valor === 'todas' ? 'Todas' : CATEGORIAS.find((c) => c.valor === valor)?.label}
+          </button>
+        ))}
+      </div>
+
       {error && (
         <p className="mt-4 rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700">{error}</p>
       )}
@@ -318,16 +419,28 @@ export default function EventosAdminPage() {
         <p className="mt-8 text-sm text-cafe-600">Cargando…</p>
       ) : eventos.length === 0 ? (
         <p className="mt-8 text-sm text-cafe-600">No hay eventos creados.</p>
+      ) : eventos.filter((ev) => filtro === 'todas' || ev.categoria === filtro).length === 0 ? (
+        <p className="mt-8 text-sm text-cafe-600">No hay nada en esta categoría.</p>
       ) : (
         <ul className="mt-6 space-y-3">
-          {eventos.map((ev) => (
+          {eventos
+            .filter((ev) => filtro === 'todas' || ev.categoria === filtro)
+            .map((ev) => (
             <li key={ev.id} className="rounded-xl border border-salvia-100 bg-white p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-salvia-800">{ev.nombre}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-salvia-800">{ev.nombre}</p>
+                    <span className="rounded-full bg-salvia-50 px-2 py-0.5 text-xs font-medium text-salvia-700">
+                      {CATEGORIAS.find((c) => c.valor === ev.categoria)?.label ?? ev.categoria}
+                    </span>
+                  </div>
                   <p className="text-sm text-cafe-600">
                     {fechaLarga(ev.fecha)} · {ev.lugar}
                   </p>
+                  {ev.categoria === 'taller' && ev.instructor && (
+                    <p className="mt-0.5 text-sm text-cafe-600">Con {ev.instructor}</p>
+                  )}
                   <p className="mt-1 text-sm text-cafe-600">
                     {clp(ev.precio_clp)} · {ev.entradas_vendidas} de {ev.capacidad_total} vendidas ·
                     máx. {ev.max_por_compra} por compra
@@ -354,6 +467,13 @@ export default function EventosAdminPage() {
                   className="rounded-lg border border-salvia-100 px-4 py-2 text-sm font-medium text-salvia-700 hover:bg-salvia-50"
                 >
                   {ev.activo ? 'Desactivar' : 'Activar'}
+                </button>
+                <button
+                  onClick={() => eliminar(ev)}
+                  disabled={eliminando === ev.id}
+                  className="rounded-lg border border-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {eliminando === ev.id ? 'Eliminando…' : 'Eliminar'}
                 </button>
               </div>
             </li>

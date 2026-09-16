@@ -5,7 +5,7 @@ import { useState } from 'react'
 const TIPOS = [
   'Cumpleaños',
   'Celebración de empresa',
-  'Bingo / juego temático',
+  'Bingo privado (tu propio evento)',
   'Cata o taller',
   'Lanzamiento o prensa',
   'Otro',
@@ -16,7 +16,7 @@ const MODALIDADES = {
     label: 'Arrendar el local',
     eyebrow: 'Eventos privados',
     titulo: 'Arrienda el local',
-    desc: 'Cumpleaños, celebraciones de equipo, catas o tu propio bingo. Nos encargamos del café, la comida y el montaje.',
+    desc: 'Cumpleaños, celebraciones de equipo, catas o tu propio bingo privado. Nos encargamos del café, la comida y el montaje.',
     bullets: [
       'Capacidad hasta 60 personas de pie',
       'Menú a medida, con opciones veganas',

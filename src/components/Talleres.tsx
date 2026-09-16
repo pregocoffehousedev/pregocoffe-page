@@ -1,14 +1,28 @@
-import { TALLERES, LOCAL } from '@/data/local'
-import { clp } from '@/lib/format'
+import { supabasePublic, type Evento } from '@/lib/supabase'
+import { clp, fechaLarga } from '@/lib/format'
+import { LOCAL } from '@/data/local'
 
 /**
- * Talleres del mes. Si el array está vacío la sección no se renderiza,
- * igual que Reseñas: mejor no mostrar la sección que mostrarla sin nada.
+ * Talleres del mes: eventos reales con categoría "taller" y activo=true.
+ * Solo informativos — la inscripción se coordina por Instagram, no hay
+ * reserva/pago propio como en los bingos.
+ * Si no hay ninguno, la sección no se renderiza (igual que Reseñas).
  */
-export default function Talleres() {
-  if (TALLERES.length === 0) return null
+export default async function Talleres() {
+  let talleres: Evento[] = []
+  try {
+    const { data } = await supabasePublic()
+      .from('eventos')
+      .select('*')
+      .eq('categoria', 'taller')
+      .eq('activo', true)
+      .order('fecha', { ascending: true })
+    talleres = (data as Evento[] | null) ?? []
+  } catch (e) {
+    console.error('[Talleres] no se pudieron leer los talleres:', e)
+  }
 
-  const numero = LOCAL.telefono.replace(/\D/g, '')
+  if (talleres.length === 0) return null
 
   return (
     <section id="talleres" className="scroll-mt-24">
@@ -23,49 +37,41 @@ export default function Talleres() {
       </header>
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {TALLERES.map((t) => {
-          const mensaje = encodeURIComponent(
-            `Hola! Quiero inscribirme al taller "${t.nombre}" (${t.fecha}).`,
-          )
-          return (
-            <article
-              key={t.nombre}
-              className="flex flex-col rounded-2xl border border-salvia-100 bg-white p-6"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-sm font-medium text-salvia-600">{t.fecha}</p>
-                {t.externo && (
-                  <span className="shrink-0 rounded-full bg-durazno-100 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-durazno-700">
-                    Instructor invitado
-                  </span>
-                )}
-              </div>
+        {talleres.map((t) => (
+          <article
+            key={t.id}
+            className="flex flex-col rounded-2xl border border-salvia-100 bg-white p-6"
+          >
+            <p className="text-sm font-medium text-salvia-600">{fechaLarga(t.fecha)}</p>
 
-              <h3 className="mt-2 text-lg font-bold text-salvia-800">{t.nombre}</h3>
-              <p className="mt-1.5 flex-1 text-sm text-cafe-600">{t.desc}</p>
+            <h3 className="mt-2 text-lg font-bold text-salvia-800">{t.nombre}</h3>
+            {t.descripcion && (
+              <p className="mt-1.5 flex-1 text-sm text-cafe-600">{t.descripcion}</p>
+            )}
 
-              <dl className="mt-4 flex items-center justify-between border-t border-salvia-100 pt-3 text-sm">
+            <dl className="mt-4 flex items-center justify-between border-t border-salvia-100 pt-3 text-sm">
+              {t.instructor && (
                 <div>
                   <dt className="text-cafe-400">Con</dt>
                   <dd className="font-medium text-cafe-700">{t.instructor}</dd>
                 </div>
-                <div className="text-right">
-                  <dt className="text-cafe-400">Cupos</dt>
-                  <dd className="font-medium text-cafe-700">{t.cupos}</dd>
-                </div>
-              </dl>
+              )}
+              <div className="text-right">
+                <dt className="text-cafe-400">Valor</dt>
+                <dd className="font-medium text-cafe-700">{clp(t.precio_clp)}</dd>
+              </div>
+            </dl>
 
-              <a
-                href={`https://wa.me/${numero}?text=${mensaje}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 flex items-center justify-center gap-2 rounded-full bg-salvia-600 px-6 py-2.5 text-sm font-semibold text-durazno-50 transition hover:bg-salvia-700"
-              >
-                Inscribirme · {clp(t.precio)}
-              </a>
-            </article>
-          )
-        })}
+            <a
+              href={`https://instagram.com/${LOCAL.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 flex items-center justify-center gap-2 rounded-full bg-salvia-600 px-6 py-2.5 text-sm font-semibold text-durazno-50 transition hover:bg-salvia-700"
+            >
+              Inscribirme por Instagram
+            </a>
+          </article>
+        ))}
       </div>
     </section>
   )

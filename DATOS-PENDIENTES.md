@@ -14,21 +14,21 @@ usa datos de ejemplo (placeholder) que hay que reemplazar por los reales.
 - [ ] **Dirección y comuna** — ¿"1 Sur 899, Talca" es correcto, o cambió?
 - [ ] **Instagram** — ¿el usuario `pregocoffeehouse` es el real?
 
-## 2. Horarios (`src/data/local.ts` → `HORARIOS`)
+## 2. Horarios (`src/data/local.ts` → `HORARIOS`) ✅ COMPLETO
 
-- [ ] ¿Son correctos los horarios actuales (L-V 08:00–19:30, sáb 09:30–15:30, domingo cerrado)?
-- [ ] ¿Hay excepciones (feriados, horario de verano, etc.) que debamos contemplar?
+- [x] Horarios de verano confirmados: L-V 08:00–20:30, sáb 09:30–15:00, domingo cerrado.
+- [ ] ¿Hay excepciones (feriados, temporada baja, etc.) que debamos contemplar más adelante?
 
-## 3. Cuenta bancaria para transferencias (`src/data/local.ts` → `CUENTA_BANCARIA`)
+## 3. Cuenta bancaria para transferencias (`src/data/local.ts` → `CUENTA_BANCARIA`) ✅ COMPLETO
 
 Se muestra en el checkout de entradas del bingo (pago solo por transferencia).
 
-- [ ] **Banco**
-- [ ] **Tipo de cuenta** (Cuenta RUT / Corriente / Vista)
-- [ ] **Número de cuenta**
-- [ ] **Titular** (nombre exacto como aparece en el banco)
-- [ ] **RUT del titular**
-- [ ] **Email asociado a la transferencia** (para comprobantes)
+- [x] **Banco**: Santander
+- [x] **Tipo de cuenta**: Cuenta Corriente
+- [x] **Número de cuenta**: 0-000-9485265-0
+- [x] **Titular**: Comercial Ryc Limitada
+- [x] **RUT del titular**: 77.943.242-4
+- [x] **Email asociado a la transferencia**: pierorusso21@gmail.com
 
 ## 4. Carta (`src/data/local.ts` → `CARTA`)
 
@@ -46,13 +46,11 @@ Se muestra en el checkout de entradas del bingo (pago solo por transferencia).
 - [ ] Confirmar que `prego-logo.png` (el que se usa en el Hero) es la versión final del logo.
 - [ ] Hay un segundo archivo `logoprego-sinfondo.png` sin usar en el código — ¿es una versión alternativa que deberíamos usar en algún lugar?
 
-## 7. Talleres del mes (`src/data/local.ts` → `TALLERES`)
+## 7. Talleres del mes (`/admin/eventos`, categoría "Taller")
 
-Actualmente hay 3 talleres de ejemplo cargados (cata de café, latte art, masa madre).
+Los talleres reales se cargan como eventos desde el panel admin (`/admin/eventos` → categoría "Taller"), con su propio campo "Instructor" (equipo Prego o invitado). El array `TALLERES` de `src/data/local.ts` quedó vacío/obsoleto para este propósito.
 
-- [ ] ¿Qué talleres reales se van a dictar este mes?
-- [ ] Para cada uno: nombre, descripción corta, fecha y hora, instructor (¿del equipo Prego o invitado externo?), cupos disponibles, precio.
-- [ ] Si no hay talleres confirmados aún, ¿dejamos la sección vacía (no se muestra) hasta tenerlos?
+- [ ] ¿Qué talleres reales se van a dictar este mes? Cargar cada uno desde `/admin/eventos`: nombre, descripción, instructor, fecha y hora, cupos, precio.
 
 ## 8. Reseñas (`src/data/local.ts` → `RESENAS`)
 

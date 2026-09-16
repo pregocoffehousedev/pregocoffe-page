@@ -52,6 +52,12 @@ export default function DisponibilidadEvento({
           ¡Quedan pocas! Las entradas se están agotando.
         </p>
       )}
+
+      {agotado && (
+        <p className="mt-3 text-sm text-cafe-500">
+          Próximamente se anunciará un nuevo bingo.
+        </p>
+      )}
     </div>
   )
 }

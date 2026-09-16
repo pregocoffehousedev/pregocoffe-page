@@ -2,7 +2,7 @@ const SECCIONES = [
   {
     href: '/admin/eventos',
     titulo: 'Eventos',
-    desc: 'Crear, editar y activar/desactivar eventos (fecha, precio, cupos).',
+    desc: 'Crear, editar, activar/desactivar y eliminar eventos (bingos y talleres): fecha, precio, cupos.',
   },
   {
     href: '/admin/reservas',

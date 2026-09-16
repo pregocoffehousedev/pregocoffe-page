@@ -23,9 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <DatosEstructurados />
         <header className="border-b border-salvia-100 bg-durazno-50/85 backdrop-blur sticky top-0 z-20">
           <nav className="flex w-full items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
-            <a href="/" className="flex items-center gap-2.5 text-salvia-600">
-              <LogoPrego className="h-8 w-auto" />
-              <span className="text-sm font-bold tracking-[0.22em]">PREGO</span>
+            <a href="/" className="flex items-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/fotos/logo-prego-rect.png" alt="Pregò Coffee House" className="h-9 w-auto" />
             </a>
             <div className="flex items-center gap-1 sm:gap-2">
               <div className="hidden items-center gap-1 md:flex">

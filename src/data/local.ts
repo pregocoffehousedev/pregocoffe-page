@@ -25,19 +25,17 @@ export const LOCAL = {
 } as const
 
 /**
- * ⚠️ DATOS BANCARIOS — REEMPLAZAR ANTES DE PUBLICAR
- *
- * Se muestran en el checkout de eventos para pagos por transferencia
- * (sin intermediario, sin comisión). El comprobante se coordina por
- * WhatsApp: no se sube ni se guarda ningún archivo.
+ * Datos bancarios. Se muestran en el checkout de eventos para pagos por
+ * transferencia (sin intermediario, sin comisión). El comprobante se
+ * coordina por WhatsApp: no se sube ni se guarda ningún archivo.
  */
 export const CUENTA_BANCARIA = {
-  banco: 'Banco Estado',
-  tipoCuenta: 'Cuenta RUT',
-  numero: '12345678',
-  titular: 'Pregò Coffee House SpA',
-  rut: '76.123.456-7',
-  email: 'hola@pregocoffee.cl',
+  banco: 'Banco Santander',
+  tipoCuenta: 'Cuenta Corriente',
+  numero: '0-000-9485265-0',
+  titular: 'Comercial Ryc Limitada',
+  rut: '77.943.242-4',
+  email: 'pierorusso21@gmail.com',
 } as const
 
 /**
@@ -48,12 +46,12 @@ export type Horario =
   | { dia: string; abre: null; cierra: null }
 
 export const HORARIOS: readonly Horario[] = [
-  { dia: 'Lunes', abre: '08:00', cierra: '19:30' },
-  { dia: 'Martes', abre: '08:00', cierra: '19:30' },
-  { dia: 'Miércoles', abre: '08:00', cierra: '19:30' },
-  { dia: 'Jueves', abre: '08:00', cierra: '19:30' },
-  { dia: 'Viernes', abre: '08:00', cierra: '19:30' },
-  { dia: 'Sábado', abre: '09:30', cierra: '15:30' },
+  { dia: 'Lunes', abre: '08:00', cierra: '20:30' },
+  { dia: 'Martes', abre: '08:00', cierra: '20:30' },
+  { dia: 'Miércoles', abre: '08:00', cierra: '20:30' },
+  { dia: 'Jueves', abre: '08:00', cierra: '20:30' },
+  { dia: 'Viernes', abre: '08:00', cierra: '20:30' },
+  { dia: 'Sábado', abre: '09:30', cierra: '15:00' },
   { dia: 'Domingo', abre: null, cierra: null },
 ] as const
 
@@ -120,48 +118,6 @@ export const GALERIA = [
   { src: '/fotos/interior-local.jpg', alt: 'Interior del local con sillones verdes y mesas de mármol' },
   { src: '/fotos/affogato.jpg', alt: 'Affogato y matcha affogato con helado' },
   { src: '/fotos/huevos-pan.jpg', alt: 'Huevos revueltos en sartén con pan tostado' },
-] as const
-
-/**
- * ⚠️ TALLERES — REEMPLAZAR POR LOS TALLERES REALES DEL MES
- *
- * `instructor` puede ser alguien del equipo de Prego o una persona externa
- * (usa `externo: true` para mostrar el badge "Instructor invitado").
- */
-export const TALLERES: readonly {
-  nombre: string
-  desc: string
-  fecha: string
-  instructor: string
-  externo?: boolean
-  cupos: number
-  precio: number
-}[] = [
-  {
-    nombre: 'Introducción a la cata de café',
-    desc: 'Aromas, acidez y cuerpo: aprende a describir una taza como un catador.',
-    fecha: 'Sáb 12 sep · 11:00',
-    instructor: 'Equipo Prego',
-    cupos: 12,
-    precio: 15000,
-  },
-  {
-    nombre: 'Latte art para principiantes',
-    desc: 'Técnica de vertido y texturizado de leche, de cero a tu primer corazón.',
-    fecha: 'Mié 16 sep · 18:30',
-    instructor: 'Equipo Prego',
-    cupos: 8,
-    precio: 18000,
-  },
-  {
-    nombre: 'Masa madre desde casa',
-    desc: 'Cómo mantener y hornear con tu propio cultivo de masa madre.',
-    fecha: 'Dom 20 sep · 10:30',
-    instructor: 'Javiera Muñoz',
-    externo: true,
-    cupos: 10,
-    precio: 22000,
-  },
 ] as const
 
 /**

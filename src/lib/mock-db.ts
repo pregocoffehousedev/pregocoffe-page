@@ -19,7 +19,10 @@ type EventoRow = {
   slug: string
   nombre: string
   descripcion: string | null
+  categoria: 'bingo' | 'taller'
+  instructor: string | null
   fecha: string
+  venta_abre_en: string | null
   lugar: string
   precio_clp: number
   capacidad_total: number
@@ -52,8 +55,22 @@ type EntradaRow = {
   creada_en: string
 }
 
+type ListaEsperaRow = {
+  id: string
+  evento_id: string
+  nombre: string
+  telefono: string
+  notificado: boolean
+  creada_en: string
+}
+
 const g = globalThis as unknown as {
-  __mockDb?: { eventos: EventoRow[]; reservas: ReservaRow[]; entradas: EntradaRow[] }
+  __mockDb?: {
+    eventos: EventoRow[]
+    reservas: ReservaRow[]
+    entradas: EntradaRow[]
+    listaEspera: ListaEsperaRow[]
+  }
 }
 
 function seed() {
@@ -63,7 +80,10 @@ function seed() {
     nombre: 'Plantitas & Café — Bingo de Plantas 4.0',
     descripcion:
       'Una tarde de bingo impartida por el equipo de Prego, con premios en plantas. Café de especialidad y pastelería disponibles para comprar aparte en el local.',
+    categoria: 'bingo',
+    instructor: null,
     fecha: new Date(Date.now() + 7 * 24 * 3600_000).toISOString(),
+    venta_abre_en: null,
     lugar: '1 Sur 899, Talca',
     precio_clp: 5000,
     capacidad_total: 50,
@@ -71,7 +91,7 @@ function seed() {
     max_por_compra: 6,
     activo: true,
   }
-  return { eventos: [evento], reservas: [], entradas: [] }
+  return { eventos: [evento], reservas: [], entradas: [], listaEspera: [] }
 }
 
 function db() {
@@ -107,6 +127,10 @@ function reservarEntradas(args: {
   const store = db()
   const evento = store.eventos.find((e) => e.slug === args.p_evento_slug && e.activo)
   if (!evento) return { data: null, error: err('EVENTO_NO_ENCONTRADO') }
+
+  if (evento.venta_abre_en && Date.now() < new Date(evento.venta_abre_en).getTime()) {
+    return { data: null, error: err('VENTA_NO_ABIERTA') }
+  }
 
   if (args.p_cantidad > evento.max_por_compra) {
     return { data: null, error: err('EXCEDE_MAX_POR_COMPRA') }
@@ -149,6 +173,32 @@ function reservarEntradas(args: {
     ],
     error: null,
   }
+}
+
+function anotarseListaEspera(args: {
+  p_evento_slug: string
+  p_nombre: string
+  p_telefono: string
+}) {
+  const store = db()
+  const evento = store.eventos.find((e) => e.slug === args.p_evento_slug && e.activo)
+  if (!evento) return { data: null, error: err('EVENTO_NO_ENCONTRADO') }
+
+  if (evento.entradas_vendidas < evento.capacidad_total) {
+    return { data: null, error: err('AUN_HAY_CUPO') }
+  }
+
+  const fila: ListaEsperaRow = {
+    id: crypto.randomUUID(),
+    evento_id: evento.id,
+    nombre: args.p_nombre.trim(),
+    telefono: args.p_telefono.trim(),
+    notificado: false,
+    creada_en: new Date().toISOString(),
+  }
+  store.listaEspera.push(fila)
+
+  return { data: fila.id, error: null }
 }
 
 function confirmarPago(reservaId: string, confirmadaPor: string) {
@@ -352,7 +402,7 @@ type ResultadoQuery = { data: unknown; error: { message: string; code: string } 
 class MockQuery<T extends Record<string, unknown>> implements PromiseLike<ResultadoQuery> {
   private filtros: Filtro[] = []
   private columnas = '*'
-  private modo: 'select' | 'update' | 'insert' = 'select'
+  private modo: 'select' | 'update' | 'insert' | 'delete' = 'select'
   private cambios: Partial<T> | null = null
   private nuevaFila: Partial<T> | null = null
   private soloUno = false
@@ -402,6 +452,11 @@ class MockQuery<T extends Record<string, unknown>> implements PromiseLike<Result
     return this
   }
 
+  delete() {
+    this.modo = 'delete'
+    return this
+  }
+
   single() {
     this.soloUno = true
     return this
@@ -432,6 +487,24 @@ class MockQuery<T extends Record<string, unknown>> implements PromiseLike<Result
 
     if (this.modo === 'update' && this.cambios) {
       coincidencias.forEach((fila) => Object.assign(fila, this.cambios))
+      return { data: null, error: null }
+    }
+
+    if (this.modo === 'delete') {
+      if (this.tabla === 'eventos') {
+        const store = db()
+        const idsABorrar = new Set(
+          coincidencias.map((fila) => (fila as Record<string, unknown>).id),
+        )
+        const tieneReservas = store.reservas.some((r) => idsABorrar.has(r.evento_id))
+        if (tieneReservas) {
+          return { data: null, error: { message: 'FK_RESERVAS', code: '23503' } }
+        }
+      }
+      for (const fila of coincidencias) {
+        const idx = this.filas.indexOf(fila)
+        if (idx !== -1) this.filas.splice(idx, 1)
+      }
       return { data: null, error: null }
     }
 
@@ -476,7 +549,7 @@ class MockQuery<T extends Record<string, unknown>> implements PromiseLike<Result
 
 export function mockSupabaseClient() {
   return {
-    from(tabla: 'eventos' | 'reservas' | 'entradas') {
+    from(tabla: 'eventos' | 'reservas' | 'entradas' | 'lista_espera') {
       const store = db()
       if (tabla === 'eventos') return new MockQuery(tabla, store.eventos)
       if (tabla === 'reservas') {
@@ -484,6 +557,7 @@ export function mockSupabaseClient() {
           eventos: () => store.eventos,
         })
       }
+      if (tabla === 'lista_espera') return new MockQuery(tabla, store.listaEspera)
       return new MockQuery(tabla, store.entradas)
     },
     rpc(fn: string, args: Record<string, unknown> = {}) {
@@ -507,6 +581,10 @@ export function mockSupabaseClient() {
         case 'editar_reserva_admin':
           return Promise.resolve(
             editarReservaAdmin(args as Parameters<typeof editarReservaAdmin>[0]),
+          )
+        case 'anotarse_lista_espera':
+          return Promise.resolve(
+            anotarseListaEspera(args as Parameters<typeof anotarseListaEspera>[0]),
           )
         default:
           return Promise.resolve({ data: null, error: err(`RPC_NO_IMPLEMENTADA:${fn}`) })

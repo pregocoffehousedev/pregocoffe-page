@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { clp } from '@/lib/format'
 import { CUENTA_BANCARIA, LOCAL } from '@/data/local'
 import { useDisponibilidadEvento } from '@/lib/useDisponibilidadEvento'
+import ContadorVenta from './ContadorVenta'
 
 type Props = {
   slug: string
@@ -12,6 +13,7 @@ type Props = {
   maxPorCompra: number
   capacidadTotal: number
   entradasVendidasInicial: number
+  ventaAbreEn: string | null
 }
 
 type ReservaTransferencia = {
@@ -27,6 +29,7 @@ export default function FormularioCompra({
   maxPorCompra,
   capacidadTotal,
   entradasVendidasInicial,
+  ventaAbreEn,
 }: Props) {
   const entradasVendidas = useDisponibilidadEvento(eventoId, entradasVendidasInicial)
   const disponibles = capacidadTotal - entradasVendidas
@@ -37,6 +40,9 @@ export default function FormularioCompra({
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [reserva, setReserva] = useState<ReservaTransferencia | null>(null)
+  const [ventaAbierta, setVentaAbierta] = useState(
+    !ventaAbreEn || new Date(ventaAbreEn).getTime() <= Date.now(),
+  )
 
   const maximo = Math.min(maxPorCompra, disponibles)
   const agotado = disponibles <= 0
@@ -79,19 +85,17 @@ export default function FormularioCompra({
     }
   }
 
-  if (agotado) {
+  if (!ventaAbierta && ventaAbreEn) {
     return (
-      <div className="rounded-2xl border border-salvia-100 bg-white p-8 text-center">
-        <p className="text-2xl">🌿</p>
-        <p className="mt-3 text-lg font-semibold text-salvia-800">
-          Entradas agotadas
-        </p>
-        <p className="mt-2 text-sm text-cafe-600">
-          Se liberan cupos cuando una reserva no se completa. Vuelve a intentar
-          en unos minutos.
-        </p>
-      </div>
+      <ContadorVenta
+        ventaAbreEn={ventaAbreEn}
+        onAbierta={() => setVentaAbierta(true)}
+      />
     )
+  }
+
+  if (agotado) {
+    return <EntradasAgotadas slug={slug} />
   }
 
   if (reserva) {
@@ -216,6 +220,102 @@ export default function FormularioCompra({
         </p>
       </div>
     </form>
+  )
+}
+
+function EntradasAgotadas({ slug }: { slug: string }) {
+  const [nombre, setNombre] = useState('')
+  const [telefono, setTelefono] = useState('')
+  const [cargando, setCargando] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [anotado, setAnotado] = useState(false)
+
+  async function anotarse(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setCargando(true)
+    try {
+      const res = await fetch('/api/lista-espera', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventoSlug: slug, nombre, telefono }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'No pudimos anotarte. Inténtalo de nuevo.')
+        setCargando(false)
+        return
+      }
+      setAnotado(true)
+    } catch {
+      setError('Sin conexión. Revisa tu internet e inténtalo de nuevo.')
+    }
+    setCargando(false)
+  }
+
+  const input =
+    'mt-1.5 w-full rounded-lg border border-salvia-100 bg-durazno-50/60 px-3.5 py-2.5 text-cafe-900 outline-none transition focus:border-salvia-400 focus:bg-white'
+  const label = 'block text-sm font-medium text-salvia-700'
+
+  return (
+    <div className="rounded-2xl border border-salvia-100 bg-white p-8 text-center">
+      <p className="text-2xl">🌿</p>
+      <p className="mt-3 text-lg font-semibold text-salvia-800">Entradas agotadas</p>
+      <p className="mt-2 text-sm text-cafe-600">
+        Se liberan cupos cuando una reserva no se completa. Deja tu WhatsApp y te
+        avisamos apenas se libere uno. Si no se libera ninguno, próximamente se
+        anunciará un nuevo bingo.
+      </p>
+
+      {anotado ? (
+        <p className="mt-5 rounded-lg bg-salvia-50 px-4 py-3 text-sm font-medium text-salvia-700">
+          ¡Listo! Quedaste anotado. Te escribimos por WhatsApp si se libera un cupo.
+        </p>
+      ) : (
+        <form onSubmit={anotarse} className="mt-5 space-y-3 text-left">
+          <label className={label}>
+            Nombre completo
+            <input
+              required
+              minLength={2}
+              maxLength={80}
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className={input}
+              placeholder="María González"
+            />
+          </label>
+
+          <label className={label}>
+            Teléfono
+            <input
+              required
+              type="tel"
+              minLength={8}
+              maxLength={20}
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+              className={input}
+              placeholder="+56 9 1234 5678"
+            />
+          </label>
+
+          {error && (
+            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={cargando}
+            className="w-full rounded-lg bg-salvia-600 py-3 font-medium text-durazno-50 transition hover:bg-salvia-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {cargando ? 'Anotando…' : 'Avísame si se libera un cupo'}
+          </button>
+        </form>
+      )}
+    </div>
   )
 }
 

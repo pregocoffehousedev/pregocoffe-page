@@ -6,12 +6,19 @@
 create extension if not exists "pgcrypto";
 
 -- ---------- EVENTOS ----------
+create type categoria_evento as enum ('bingo', 'taller');
+
 create table if not exists eventos (
   id                uuid primary key default gen_random_uuid(),
   slug              text unique not null,
   nombre            text not null,
   descripcion       text,
+  categoria         categoria_evento not null default 'bingo',
+  instructor        text,
   fecha             timestamptz not null,
+  -- Si no es null, las entradas no se pueden comprar hasta esta fecha/hora
+  -- (aunque el evento ya esté activo). NULL = venta abierta de inmediato.
+  venta_abre_en     timestamptz,
   lugar             text not null,
   precio_clp        integer not null check (precio_clp > 0),
   capacidad_total   integer not null check (capacidad_total > 0),
@@ -63,6 +70,23 @@ create table if not exists entradas (
 create index if not exists idx_entradas_reserva on entradas (reserva_id);
 create index if not exists idx_entradas_codigo on entradas (codigo);
 
+-- ---------- LISTA DE ESPERA ----------
+-- Cuando un evento se agota, quien quiera puede dejar su nombre y
+-- WhatsApp aquí. El equipo la revisa en /admin/reservas → "Lista de
+-- espera" y avisa a mano si se libera un cupo (alguien cancela o no
+-- confirma a tiempo).
+create table if not exists lista_espera (
+  id          uuid primary key default gen_random_uuid(),
+  evento_id   uuid not null references eventos(id) on delete cascade,
+  nombre      text not null,
+  telefono    text not null,
+  notificado  boolean not null default false,
+  creada_en   timestamptz not null default now()
+);
+
+create index if not exists idx_lista_espera_evento
+  on lista_espera (evento_id, creada_en);
+
 -- ============================================================
 -- RESERVA ATÓMICA
 -- Un solo UPDATE condicional: Postgres serializa las filas
@@ -100,6 +124,10 @@ begin
     raise exception 'EVENTO_NO_ENCONTRADO' using errcode = 'P0002';
   end if;
 
+  if v_evento.venta_abre_en is not null and now() < v_evento.venta_abre_en then
+    raise exception 'VENTA_NO_ABIERTA' using errcode = 'P0001';
+  end if;
+
   if p_cantidad > v_evento.max_por_compra then
     raise exception 'EXCEDE_MAX_POR_COMPRA' using errcode = 'P0001';
   end if;
@@ -131,6 +159,43 @@ begin
     v_monto,
     v_expira,
     (v_evento.capacidad_total - v_nuevo_total);
+end;
+$$;
+
+-- ============================================================
+-- ANOTARSE EN LA LISTA DE ESPERA — solo si el evento realmente está
+-- agotado (evita acumular anotados cuando aún queda cupo real).
+-- ============================================================
+create or replace function anotarse_lista_espera(
+  p_evento_slug text,
+  p_nombre      text,
+  p_telefono    text
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_evento eventos%rowtype;
+  v_id     uuid;
+begin
+  select * into v_evento from eventos
+   where slug = p_evento_slug and activo = true;
+
+  if not found then
+    raise exception 'EVENTO_NO_ENCONTRADO' using errcode = 'P0002';
+  end if;
+
+  if v_evento.entradas_vendidas < v_evento.capacidad_total then
+    raise exception 'AUN_HAY_CUPO' using errcode = 'P0001';
+  end if;
+
+  insert into lista_espera (evento_id, nombre, telefono)
+    values (v_evento.id, trim(p_nombre), trim(p_telefono))
+  returning id into v_id;
+
+  return v_id;
 end;
 $$;
 
@@ -405,12 +470,13 @@ $$;
 -- ============================================================
 -- RLS: nada accesible desde el cliente. Todo pasa por el server.
 -- ============================================================
-alter table eventos  enable row level security;
-alter table reservas enable row level security;
-alter table entradas enable row level security;
+alter table eventos      enable row level security;
+alter table reservas     enable row level security;
+alter table entradas     enable row level security;
+alter table lista_espera enable row level security;
 
 -- Solo lectura pública del evento (para la página del bingo)
 create policy "evento publico" on eventos
   for select using (activo = true);
 
--- reservas/entradas: sin policies => solo service_role las toca
+-- reservas/entradas/lista_espera: sin policies => solo service_role las toca

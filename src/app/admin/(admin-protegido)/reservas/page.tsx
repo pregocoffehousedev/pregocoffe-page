@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { clp } from '@/lib/format'
 import ValidarEntradas from '@/components/admin/ValidarEntradas'
+import ListaEsperaAdmin from '@/components/admin/ListaEsperaAdmin'
 
 type Estado = 'pendiente' | 'pagada' | 'expirada' | 'cancelada'
 
@@ -37,7 +38,7 @@ const FILTROS: { valor: Estado | 'todas'; etiqueta: string }[] = [
 // de contacto/cantidad, y cancelar. La sesión de Google (verificada por el
 // layout de /admin) viaja en cookies: no hace falta ningún token manual.
 export default function ReservasAdminPage() {
-  const [tab, setTab] = useState<'reservas' | 'validar'>('reservas')
+  const [tab, setTab] = useState<'reservas' | 'validar' | 'espera'>('reservas')
   const [reservas, setReservas] = useState<Reserva[]>([])
   const [cupo, setCupo] = useState<Cupo | null>(null)
   const [filtro, setFiltro] = useState<Estado | 'todas'>('pendiente')
@@ -168,11 +169,25 @@ export default function ReservasAdminPage() {
         >
           Validar entradas
         </button>
+        <button
+          onClick={() => setTab('espera')}
+          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition ${
+            tab === 'espera'
+              ? 'bg-salvia-600 text-white'
+              : 'text-salvia-700 hover:bg-salvia-50'
+          }`}
+        >
+          Lista de espera
+        </button>
       </div>
 
       {tab === 'validar' ? (
         <div className="mt-8">
           <ValidarEntradas />
+        </div>
+      ) : tab === 'espera' ? (
+        <div className="mt-8">
+          <ListaEsperaAdmin />
         </div>
       ) : (
         <>

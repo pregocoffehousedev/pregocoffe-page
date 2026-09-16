@@ -53,6 +53,12 @@ export async function POST(req: Request) {
         { status: 409 },
       )
     }
+    if (msg.includes('VENTA_NO_ABIERTA')) {
+      return NextResponse.json(
+        { error: 'La venta de entradas aún no está abierta.' },
+        { status: 403 },
+      )
+    }
     if (msg.includes('EXCEDE_MAX_POR_COMPRA')) {
       return NextResponse.json(
         { error: 'Superaste el máximo de entradas por compra.' },

@@ -32,12 +32,17 @@ export function supabasePublic() {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
+export type CategoriaEvento = 'bingo' | 'taller'
+
 export type Evento = {
   id: string
   slug: string
   nombre: string
   descripcion: string | null
+  categoria: CategoriaEvento
+  instructor: string | null
   fecha: string
+  venta_abre_en: string | null
   lugar: string
   precio_clp: number
   capacidad_total: number

@@ -19,7 +19,14 @@ export default function DisponibilidadBanner({
   const disponibles = capacidadTotal - entradasVendidas
 
   if (disponibles <= 0) {
-    return <p className="text-sm font-medium text-cafe-600">Entradas agotadas</p>
+    return (
+      <div>
+        <p className="text-sm font-semibold text-cafe-700">Entradas agotadas</p>
+        <p className="mt-1 text-xs text-cafe-500">
+          Próximamente se anunciará un nuevo bingo.
+        </p>
+      </div>
+    )
   }
 
   return (

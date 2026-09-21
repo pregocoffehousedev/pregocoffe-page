@@ -91,10 +91,9 @@ Cron cada minuto ──► libera reservas vencidas al stock
 
 ## Pruebas antes del evento
 
-**Sobreventa** (lo más importante):
-```
-Supabase SQL Editor → ejecuta scripts/test-concurrencia.sql
-Esperado: 10 éxitos, 40 SIN_CUPO, invariante intacto.
+**Flujo de reserva** (sin necesitar login):
+```bash
+npm run test:flujo
 ```
 
 **Carga** (300 usuarios simultáneos, 2x lo esperado):

@@ -4,10 +4,10 @@ insert into eventos (slug, nombre, descripcion, categoria, fecha, lugar, precio_
 values (
   'plantitas-y-cafe-4',
   'Plantitas & Café — Bingo de Plantas 4.0',
-  'Una tarde de bingo con premios en plantas. Café de especialidad y pastelería disponibles para comprar aparte en el local. Cada cartón participa por suculentas, macetas y plantas de interior. ¡Cupos limitados!',
+  '¡Vuelve Plantitas & Café! 🌿 Una nueva edición de nuestro Bingo de Plantas, una experiencia para disfrutar, compartir y participar por premios en plantas en el ambiente de Prego Coffee House. Los cupos son limitados para garantizar una experiencia cómoda para todos los participantes. Tu entrada incluye el cartón de bingo y la participación por los premios. El café y las preparaciones dulces pueden adquirirse por separado. ¡Reserva tu cupo y acompáñanos en una nueva edición de Plantitas & Café!',
   'bingo',
   '2026-09-26 18:00:00-03',
-  'Pregò Coffee House',
+  'Prego Coffee House, 1 Sur 899, Talca',
   5000,
   50,
   6

@@ -4,6 +4,9 @@ export default {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        oswald: ['var(--font-oswald)'],
+      },
       colors: {
         // Paleta tomada del logo oficial
         salvia: {

@@ -1,4 +1,4 @@
-# Pregò Coffee — Venta de entradas para Bingo
+# Prego Coffee — Venta de entradas para Bingo
 
 Next.js 15 + Supabase + Mercado Pago. Diseñado para soportar cientos de
 compradores simultáneos **sin sobrevender ni una sola entrada**.

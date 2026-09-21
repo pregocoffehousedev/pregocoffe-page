@@ -4,8 +4,8 @@ import GrupoCarta from '@/components/GrupoCarta'
 import NavCarta from '@/components/NavCarta'
 
 export const metadata: Metadata = {
-  title: 'Carta — Pregò Coffee House',
-  description: 'Carta completa de Pregò Coffee House: café de especialidad, bocatas, desayunos, pastas y más.',
+  title: 'Carta — Prego Coffee House',
+  description: 'Carta completa de Prego Coffee House: café de especialidad, bocatas, desayunos, pastas y más.',
 }
 
 export default function CartaPage() {

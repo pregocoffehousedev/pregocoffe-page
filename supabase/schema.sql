@@ -1,5 +1,5 @@
 -- ============================================================
--- Pregò Coffee — Bingo · Schema
+-- Prego Coffee — Bingo · Schema
 -- Ejecutar en Supabase Studio > SQL Editor
 -- ============================================================
 

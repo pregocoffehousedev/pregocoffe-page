@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     // El SDK NO lanza excepción ante credenciales inválidas: devuelve
     // { error }. Hay que revisarlo o perderíamos solicitudes en silencio.
     const { error: errEnvio } = await resend.emails.send({
-      from: process.env.RESEND_FROM || 'Pregò Coffee <eventos@resend.dev>',
+      from: process.env.RESEND_FROM || 'Prego Coffee <eventos@resend.dev>',
       to: process.env.EVENTOS_EMAIL || LOCAL.email,
       replyTo: d.email,
       subject: `Cotización de evento · ${d.tipo} · ${d.personas} personas`,

@@ -4,7 +4,6 @@ import { fechaLarga } from '@/lib/format'
 import { LOCAL } from '@/data/local'
 import FormularioCompra from '@/components/FormularioCompra'
 import DisponibilidadEvento from '@/components/DisponibilidadEvento'
-import LogoPrego from '@/components/LogoPrego'
 
 // ISR: la página se sirve desde el CDN y se regenera cada 30s.
 // 150 personas recargando NO golpean la base de datos.
@@ -71,40 +70,47 @@ export default async function EventoPage({
 
   return (
     <div className="space-y-12">
-      {/* ---------- Cabecera sobre el azulejo ---------- */}
-      <header className="tile-wall relative -mx-5 overflow-hidden border-y border-salvia-900/10 sm:mx-0 sm:rounded-2xl sm:border">
+      {/* ---------- Cabecera con ilustración de fondo ---------- */}
+      <header className="relative -mx-5 overflow-hidden border-y border-salvia-900/10 bg-durazno-50 sm:mx-0 sm:rounded-2xl sm:border">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-center opacity-90"
+          style={{ backgroundImage: "url('/fotos/plantas-coffe.jpeg')" }}
+        />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'linear-gradient(90deg, rgba(250,247,243,0) 0%, rgba(250,247,243,.97) 18%, rgba(250,247,243,.97) 82%, rgba(250,247,243,0) 100%)',
+              'linear-gradient(180deg, rgba(250,247,243,.4) 0%, rgba(250,247,243,.85) 55%, rgba(250,247,243,.97) 100%)',
           }}
         />
         <div className="relative z-10 px-6 py-16 text-center sm:py-20">
-          <LogoPrego className="mx-auto h-11 w-auto text-salvia-600" />
-          <p className="mt-4 text-[0.6rem] font-semibold uppercase tracking-[0.4em] text-salvia-700/70">
-            Evento especial
-          </p>
-          <h1 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight text-salvia-800 sm:text-[2.3rem] sm:leading-[1.15]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/fotos/logo-prego-rect.png"
+            alt="Prego Coffee House"
+            className="mx-auto h-14 w-auto sm:h-16"
+          />
+          <h1 className="mx-auto mt-4 max-w-2xl font-oswald text-3xl font-bold uppercase tracking-tight text-salvia-800 sm:text-[2.3rem] sm:leading-[1.15]">
             {evento.nombre}
           </h1>
 
-          <dl className="mt-7 flex flex-col items-center justify-center gap-3 text-sm sm:flex-row sm:gap-x-8">
-            <div className="flex flex-col items-center gap-0.5 sm:flex-row sm:gap-2">
-              <dt className="text-xs uppercase tracking-wider text-salvia-700/60 sm:text-sm sm:normal-case sm:tracking-normal">
+          <dl className="mt-7 flex flex-col items-center justify-center gap-4 lg:flex-row lg:gap-x-10">
+            <div className="flex flex-col items-center gap-1 lg:flex-row lg:gap-3">
+              <dt className="font-oswald text-lg uppercase tracking-wide text-salvia-700/70 sm:text-xl">
                 Cuándo
               </dt>
-              <dd className="font-semibold text-salvia-800">
+              <dd className="text-sm font-semibold text-salvia-800 sm:text-base">
                 {fechaLarga(evento.fecha)}
               </dd>
             </div>
-            <span className="hidden h-4 w-px bg-salvia-900/15 sm:block" />
-            <div className="flex flex-col items-center gap-0.5 sm:flex-row sm:gap-2">
-              <dt className="text-xs uppercase tracking-wider text-salvia-700/60 sm:text-sm sm:normal-case sm:tracking-normal">
+            <span className="hidden h-4 w-px bg-salvia-900/15 lg:block" />
+            <div className="flex flex-col items-center gap-1 lg:flex-row lg:gap-3">
+              <dt className="font-oswald text-lg uppercase tracking-wide text-salvia-700/70 sm:text-xl">
                 Dónde
               </dt>
-              <dd className="font-semibold text-salvia-800">{evento.lugar}</dd>
+              <dd className="text-sm font-semibold text-salvia-800 sm:text-base">{evento.lugar}</dd>
             </div>
           </dl>
         </div>

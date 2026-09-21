@@ -20,8 +20,8 @@ export default function Galeria() {
           <figure
             key={foto.src}
             className={`group relative overflow-hidden rounded-xl border border-salvia-100 bg-salvia-50 ${
-              // La primera y la cuarta ocupan doble alto: rompe la grilla
-              i === 0 || i === 3 ? 'row-span-2' : ''
+              // La primera foto de cada fila de 3 ocupa doble alto: rompe la grilla
+              i % 3 === 0 ? 'row-span-2' : ''
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -31,7 +31,7 @@ export default function Galeria() {
               loading="lazy"
               className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
             />
-            <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-salvia-900/70 to-transparent p-3 text-xs text-white opacity-0 transition group-hover:opacity-100">
+            <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 font-oswald text-sm font-semibold uppercase tracking-wide text-white opacity-0 transition group-hover:opacity-100">
               {foto.alt}
             </figcaption>
           </figure>

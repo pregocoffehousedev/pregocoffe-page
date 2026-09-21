@@ -36,10 +36,10 @@ Se muestra en el checkout de entradas del bingo (pago solo por transferencia).
 - [x] Carta real de otoño-invierno cargada: 15 categorías (Café, Infusiones, Mocktails, Bebidas frías, Bocatas, Sándwiches, Tostadas, Desayunos, Brunchealo, Ensaladas, Especialidades de la Nonna, Promo almuerzo, Waffles, Helados y postres, Pastelería), con los precios vigentes en Fudo.
 - Nota técnica: los ítems con precio variable ("Según variedad", pastelería del día) muestran "Consultar" en vez de un monto.
 
-## 5. Galería de fotos (`public/fotos/` + `src/data/local.ts` → `GALERIA`)
+## 5. Galería de fotos (`public/fotos/` + `src/data/local.ts` → `GALERIA`) ✅ COMPLETO
 
-- [ ] Las 6 fotos actuales (brunch, matcha, cookies, interior, affogato, huevos) — ¿son las que quieren usar, o hay fotos más nuevas/mejores?
-- [ ] ¿Quieren agregar o quitar alguna foto de la sección "Un vistazo"?
+- [x] 9 fotos reales del local cargadas (pareja en mesa, mosaico de platos, mamá e hijo, laptop y desayuno, amigas, vasos para llevar, tostadas, café, matcha), optimizadas a ~130-380 KB cada una.
+- [x] La foto de la sección "Nuestra historia" también se actualizó a una foto real (antes usaba un placeholder).
 
 ## 6. Logo (`public/logos/`)
 

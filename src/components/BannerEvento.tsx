@@ -53,17 +53,13 @@ export default async function BannerEvento() {
           <span className="inline-block rounded-full bg-durazno-100/20 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-durazno-100">
             Próximo Bingo
           </span>
-          <h2 className="mt-4 text-3xl font-bold text-durazno-50 sm:text-4xl">
+          <h2 className="mt-4 font-oswald text-3xl font-bold uppercase text-durazno-50 sm:text-4xl">
             {evento.nombre}
           </h2>
-          <p className="mt-3 max-w-lg text-durazno-100/90">
-            {evento.descripcion ??
-              'Una tarde de bingo con premios en plantas. Café de especialidad y pastelería disponibles para comprar aparte.'}
-          </p>
 
           <dl className="mt-6 flex flex-wrap gap-3">
             <div className="rounded-xl bg-durazno-50/15 px-4 py-3">
-              <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-durazno-100/80">
+              <dt className="font-oswald text-sm uppercase tracking-wide text-durazno-100/80">
                 Cuándo
               </dt>
               <dd className="mt-0.5 text-lg font-bold capitalize text-durazno-50">
@@ -71,7 +67,7 @@ export default async function BannerEvento() {
               </dd>
             </div>
             <div className="rounded-xl bg-durazno-50/15 px-4 py-3">
-              <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-durazno-100/80">
+              <dt className="font-oswald text-sm uppercase tracking-wide text-durazno-100/80">
                 Valor
               </dt>
               <dd className="mt-0.5 text-lg font-bold text-durazno-50">
@@ -90,7 +86,7 @@ export default async function BannerEvento() {
             />
           ) : (
             <div>
-              <p className="text-sm font-semibold text-cafe-700">
+              <p className="font-oswald text-base uppercase tracking-wide text-cafe-700">
                 Venta de entradas desde el
               </p>
               <p className="mt-0.5 text-sm text-cafe-600">

@@ -6,7 +6,7 @@
  */
 
 export const LOCAL = {
-  nombre: 'Pregò Coffee House',
+  nombre: 'Prego Coffee House',
   descriptor: 'Cafetería de especialidad y panadería artesanal',
   direccion: '1 Sur 899',
   comuna: 'Talca',
@@ -219,16 +219,19 @@ export const CARTA = [
 ] as const
 
 /**
- * Galería. Fotos reales optimizadas desde public/galeria/prego/
- * (originales sin comprimir) a public/galeria/fotos/ (1600px, ~200 KB).
+ * Galería. Fotos reales del local, optimizadas desde public/prego-img/
+ * (originales sin comprimir) a public/fotos/ (1600px, ~130-380 KB).
  */
 export const GALERIA = [
-  { src: '/fotos/brunch-mesa.jpg', alt: 'Mesa de brunch con tostadas de palta, latte y cheesecake' },
-  { src: '/fotos/iced-matcha.jpg', alt: 'Iced matcha con naranja recién servido' },
-  { src: '/fotos/ny-cookies.jpg', alt: 'New York cookies saliendo del horno' },
-  { src: '/fotos/interior-local.jpg', alt: 'Interior del local con sillones verdes y mesas de mármol' },
-  { src: '/fotos/affogato.jpg', alt: 'Affogato y matcha affogato con helado' },
-  { src: '/fotos/huevos-pan.jpg', alt: 'Huevos revueltos en sartén con pan tostado' },
+  { src: '/fotos/pareja-en-mesa.jpg', alt: 'Desayunando juntos bajo nuestro mural ✨' },
+  { src: '/fotos/mosaico-platos.jpg', alt: 'Para todos los gustos: palta, huevos y ensalada fresca' },
+  { src: '/fotos/mama-e-hijo.jpg', alt: 'Momentos en familia, con los más pequeños incluidos' },
+  { src: '/fotos/laptop-y-desayuno.jpg', alt: 'Work coffee: trae tu laptop, nosotros ponemos el café' },
+  { src: '/fotos/tostada-frutos-rojos.jpg', alt: 'Nuestra tostada con yogurt y frutos rojos, un dulce imposible de resistir' },
+  { src: '/fotos/vasos-para-llevar.jpg', alt: '¿Con prisa? Tu café favorito, listo para llevar' },
+  { src: '/fotos/amigas-riendo.jpg', alt: 'Las mejores charlas pasan con un matcha en la mano' },
+  { src: '/fotos/cafe-y-tostada.jpg', alt: 'Arte en la taza, sabor en cada sorbo' },
+  { src: '/fotos/matcha-y-sandwich.jpg', alt: 'Matcha y sándwich recién salidos de nuestra cocina' },
 ] as const
 
 /**

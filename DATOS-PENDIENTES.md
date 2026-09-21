@@ -7,17 +7,18 @@ usa datos de ejemplo (placeholder) que hay que reemplazar por los reales.
 
 ## 1. Datos del local (`src/data/local.ts`)
 
-- [ ] **Teléfono de WhatsApp** — número real en formato internacional (ej. `+56912345678`), el que van a usar para recibir comprobantes de transferencia y coordinar pedidos.
-- [ ] **Email de contacto** — el que aparece en el pie de página y recibe las cotizaciones de eventos privados.
-- [ ] **Link de PedidosYa** — el del perfil real del local (Perfil → Compartir).
-- [ ] **Coordenadas exactas del local** — para que el mapa apunte al punto correcto (Google Maps → clic derecho sobre el local → copiar coordenadas). Actualmente apunta al centro de Talca.
-- [ ] **Dirección y comuna** — ¿"1 Sur 899, Talca" es correcto, o cambió?
-- [ ] **Instagram** — ¿el usuario `pregocoffeehouse` es el real?
+- [x] **Teléfono de WhatsApp** — +56 9 8164 6129.
+- [x] **Email de contacto** — info@pregocoffeehouse.com.
+- [x] **Link de PedidosYa** — ya cargado.
+- [x] **Coordenadas exactas del local** — ya corregidas (-35.4270218, -71.6640935).
+- [x] **Dirección y comuna** — 1 Sur 899, Talca, confirmado.
+- [x] **Instagram** — @pregocoffeehouse, confirmado.
 
 ## 2. Horarios (`src/data/local.ts` → `HORARIOS`) ✅ COMPLETO
 
 - [x] Horarios de verano confirmados: L-V 08:00–20:30, sáb 09:30–15:00, domingo cerrado.
-- [ ] ¿Hay excepciones (feriados, temporada baja, etc.) que debamos contemplar más adelante?
+- [x] Feriados: el sitio avisa que el horario puede variar y remite a Instagram (no se automatiza fecha por fecha).
+- [ ] Horario de invierno: pendiente de recibir cuando corresponda actualizarlo.
 
 ## 3. Cuenta bancaria para transferencias (`src/data/local.ts` → `CUENTA_BANCARIA`) ✅ COMPLETO
 
@@ -28,13 +29,12 @@ Se muestra en el checkout de entradas del bingo (pago solo por transferencia).
 - [x] **Número de cuenta**: 0-000-9485265-0
 - [x] **Titular**: Comercial Ryc Limitada
 - [x] **RUT del titular**: 77.943.242-4
-- [x] **Email asociado a la transferencia**: pierorusso21@gmail.com
+- [x] **Email asociado a la transferencia**: info@pregocoffeehouse.com
 
-## 4. Carta (`src/data/local.ts` → `CARTA`)
+## 4. Carta (`src/data/local.ts` → `CARTA`) ✅ COMPLETO
 
-- [ ] ¿Los productos y precios de café, "sin café", panadería/pastelería y cocina son los actuales?
-- [ ] ¿Falta algún producto o hay alguno que ya no se vende?
-- [ ] ¿Los precios están al día? (revisar los 4 grupos completos, hay ~27 ítems cargados como ejemplo/borrador)
+- [x] Carta real de otoño-invierno cargada: 15 categorías (Café, Infusiones, Mocktails, Bebidas frías, Bocatas, Sándwiches, Tostadas, Desayunos, Brunchealo, Ensaladas, Especialidades de la Nonna, Promo almuerzo, Waffles, Helados y postres, Pastelería), con los precios vigentes en Fudo.
+- Nota técnica: los ítems con precio variable ("Según variedad", pastelería del día) muestran "Consultar" en vez de un monto.
 
 ## 5. Galería de fotos (`public/fotos/` + `src/data/local.ts` → `GALERIA`)
 
@@ -52,13 +52,10 @@ Los talleres reales se cargan como eventos desde el panel admin (`/admin/eventos
 
 - [ ] ¿Qué talleres reales se van a dictar este mes? Cargar cada uno desde `/admin/eventos`: nombre, descripción, instructor, fecha y hora, cupos, precio.
 
-## 8. Reseñas (`src/data/local.ts` → `RESENAS`)
+## 8. Reseñas (`src/data/local.ts` → `RESENAS`) ✅ COMPLETO
 
-Actualmente vacío — la sección no se muestra hasta que se agreguen reseñas reales.
-
-- [ ] ¿Tienen reseñas reales en Google Maps o Instagram que quieran destacar?
-- [ ] Si es así: texto exacto (copiado tal cual), nombre público de quien la escribió, calificación en estrellas, y de dónde viene (Google/Instagram).
-- [ ] **Importante:** no se pueden inventar reseñas — hay que usar testimonios reales y textuales (por tema legal, Ley del Consumidor).
+- [x] 5 reseñas reales de Google Maps cargadas (Joaquín Pavez, Pilar Cabello, Diego Cornejo Aburto, Anette Parra, Johann Blackaller), todas 5 estrellas.
+- [x] Link "Ver todas las reseñas en Google Maps" agregado al final de la sección.
 
 ## 9. Instagram Feed
 
@@ -77,10 +74,10 @@ Actualmente vacío — la sección no se muestra hasta que se agreguen reseñas 
 - [ ] ¿Qué incluye exactamente la entrada? (actualmente: cartón de bingo + premios en plantas — el café y lo dulce se compran aparte).
 - [ ] ¿Cómo se entregan los premios en plantas? (esto es solo para que el equipo lo tenga claro, no afecta el código).
 
-## 11. Coffee Break / Prego a Eventos (`src/components/ReservaEventos.tsx`)
+## 11. Coffee Break & Desayunos Corporativos (`src/components/ReservaEventos.tsx`) ✅ COMPLETO
 
-- [ ] Confirmar el texto de la modalidad "Llevar café a tu evento": barra de café con barista, pastelería, montaje/desmontaje — ¿es correcto o falta/sobra algo?
-- [ ] Para "Arrienda el local": ¿la capacidad de "hasta 60 personas de pie" sigue siendo correcta?
+- [x] Sección reescrita con el texto institucional real y los 4 servicios: Coffee Break Buffet, Mesas de Directorio, Cajas Corporativas de Desayunos, Barra de Café de Especialidad (sin barista).
+- [x] Se eliminó "Arrienda el local": ya no se ofrece arriendo independiente del local. Solo quedan disponibles talleres/experiencias gastronómicas coordinadas previamente con Prego (sección Talleres).
 
 ## 12. Cuenta admin / seguridad
 
@@ -89,9 +86,11 @@ Actualmente vacío — la sección no se muestra hasta que se agreguen reseñas 
       (whitelist en `src/lib/adminAuth.ts`).
 - [ ] ¿Quién del equipo va a estar a cargo de confirmar los pagos por transferencia y validar entradas el día del evento (o antes)? Si hace falta dar acceso a alguien más, agregar su email a la whitelist.
 
-## 13. Cotizaciones de eventos privados
+## 13. Cotizaciones de Coffee Break corporativo
 
-- [ ] Confirmar el **email que debe recibir las solicitudes** del formulario "Arrienda el local" / Coffee Break (actualmente cae al email de contacto general si no se configura uno aparte).
+- [x] Destinatario confirmado: info@pregocoffeehouse.com (`EVENTOS_EMAIL` / `LOCAL.email`).
+- [ ] ⚠️ **BLOQUEANTE**: el envío de correos (Resend) todavía no funciona en producción. Se configuró la API key, pero Resend solo permite enviar a `pregocoffehousedev@gmail.com` (la cuenta de registro) mientras el dominio `pregocoffeehouse.com` no esté verificado con registros DNS. Sin ese DNS, **las cotizaciones del formulario fallan** y el cliente ve "No pudimos enviar tu solicitud. Escríbenos por WhatsApp." — no se pierden en silencio, pero tampoco llegan por email.
+- [ ] Para resolverlo: cuando tengan acceso al DNS de `pregocoffeehouse.com` (dominio propio, no solo el de PedidosYa/Instagram), hay que entrar a resend.com/domains, agregar el dominio, y cargar los registros TXT/MX que Resend indique en el proveedor de DNS. Avisar cuando esté listo para verificarlo.
 
 ---
 

@@ -93,7 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   ['Carta', '/#carta'],
                   ['Para llevar', '/#para-llevar'],
                   ['Galería', '/#galeria'],
-                  ['Eventos privados', '/#eventos'],
+                  ['Coffee Break corporativo', '/#eventos'],
                   ['Entradas Bingo', '/evento'],
                 ].map(([texto, href]) => (
                   <li key={href}>

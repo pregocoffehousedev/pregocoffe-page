@@ -1,4 +1,4 @@
-import { RESENAS } from '@/data/local'
+import { RESENAS, GOOGLE_MAPS_URL } from '@/data/local'
 
 function Estrellas({ n }: { n: number }) {
   return (
@@ -55,6 +55,17 @@ export default function Resenas() {
           </figure>
         ))}
       </div>
+
+      <p className="mt-8 text-center">
+        <a
+          href={GOOGLE_MAPS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-medium text-salvia-700 underline underline-offset-4 hover:text-salvia-800"
+        >
+          Ver todas las reseñas en Google Maps →
+        </a>
+      </p>
     </section>
   )
 }

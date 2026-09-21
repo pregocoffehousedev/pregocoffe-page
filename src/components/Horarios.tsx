@@ -96,6 +96,19 @@ export default function Horarios() {
       >
         Escríbenos por WhatsApp
       </a>
+
+      <p className="mt-3 text-center text-xs text-cafe-400">
+        En feriados el horario puede variar. Revisa nuestro{' '}
+        <a
+          href={`https://instagram.com/${LOCAL.instagram}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-cafe-600"
+        >
+          Instagram
+        </a>{' '}
+        para confirmar.
+      </p>
     </div>
   )
 }

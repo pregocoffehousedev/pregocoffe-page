@@ -146,7 +146,7 @@ export default function ReservasAdminPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-xl font-bold text-salvia-800">Reserva para Bingo Plantil</h1>
+      <h1 className="text-xl font-bold text-salvia-800">Reserva bingos</h1>
 
       <div className="mt-4 flex gap-1.5 rounded-lg border border-salvia-100 bg-white p-1">
         <button

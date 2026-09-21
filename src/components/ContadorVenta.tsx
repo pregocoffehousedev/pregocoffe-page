@@ -22,6 +22,14 @@ function calcularRestante(objetivoMs: number) {
 export default function ContadorVenta({ ventaAbreEn, onAbierta }: Props) {
   const objetivoMs = new Date(ventaAbreEn).getTime()
   const [tiempo, setTiempo] = useState(() => calcularRestante(objetivoMs))
+  // Intl.DateTimeFormat puede diferir en bytes invisibles (espacios NNBSP)
+  // entre el ICU del servidor y el del navegador — formateamos solo tras
+  // montar en el cliente para no romper la hidratación con ese mismatch.
+  const [fechaTexto, setFechaTexto] = useState<string | null>(null)
+
+  useEffect(() => {
+    setFechaTexto(fechaLarga(ventaAbreEn))
+  }, [ventaAbreEn])
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -46,7 +54,7 @@ export default function ContadorVenta({ ventaAbreEn, onAbierta }: Props) {
     <div className="overflow-hidden rounded-2xl border border-salvia-100 bg-white p-6 text-center shadow-sm">
       <p className="font-semibold text-salvia-800">La venta de entradas aún no abre</p>
       <p className="mt-1 text-sm text-cafe-600">
-        Disponibles desde el {fechaLarga(ventaAbreEn)}
+        Disponibles desde el {fechaTexto ?? '…'}
       </p>
 
       <div className="mt-5 flex justify-center gap-3">

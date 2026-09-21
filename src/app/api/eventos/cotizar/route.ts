@@ -13,7 +13,7 @@ const Body = z.object({
   telefono: z.string().trim().max(20).optional().or(z.literal('')),
   tipo: z.string().trim().min(2).max(60),
   fecha: z.string().trim().min(4).max(20),
-  personas: z.coerce.number().int().min(5).max(200),
+  personas: z.coerce.number().int().min(5).max(50),
   mensaje: z.string().trim().max(800).optional().or(z.literal('')),
 })
 

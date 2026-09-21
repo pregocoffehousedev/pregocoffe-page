@@ -17,7 +17,11 @@ export default async function Talleres() {
       .eq('categoria', 'taller')
       .eq('activo', true)
       .order('fecha', { ascending: true })
-    talleres = (data as Evento[] | null) ?? []
+    // Un taller ya finalizado desaparece solo de la sección pública, sin
+    // depender de que alguien recuerde desactivarlo a mano en el admin.
+    talleres = ((data as Evento[] | null) ?? []).filter(
+      (t) => new Date(t.fecha).getTime() >= Date.now(),
+    )
   } catch (e) {
     console.error('[Talleres] no se pudieron leer los talleres:', e)
   }

@@ -2,64 +2,43 @@
 
 import { useState } from 'react'
 
-const TIPOS = [
-  'Cumpleaños',
-  'Celebración de empresa',
-  'Bingo privado (tu propio evento)',
-  'Cata o taller',
-  'Lanzamiento o prensa',
-  'Otro',
+const SERVICIOS = [
+  {
+    nombre: 'Coffee Break Buffet',
+    desc: 'Propuestas para reuniones, capacitaciones y eventos corporativos, con preparaciones artesanales dulces y saladas.',
+  },
+  {
+    nombre: 'Mesas de Directorio',
+    desc: 'Ideales para encuentros ejecutivos y reuniones importantes, con una presentación cuidada y personalizada.',
+  },
+  {
+    nombre: 'Cajas Corporativas de Desayunos',
+    desc: 'Perfectas para regalar, sorprender o enviar a equipos de trabajo.',
+  },
+  {
+    nombre: 'Barra de Café de Especialidad',
+    desc: 'Servicio de café de especialidad para eventos, con opción de acompañarlo de pastelería artesanal, montaje y desmontaje. La barra de café no incluye barista.',
+  },
 ] as const
 
-const MODALIDADES = {
-  local: {
-    label: 'Arrendar el local',
-    eyebrow: 'Eventos privados',
-    titulo: 'Arrienda el local',
-    desc: 'Cumpleaños, celebraciones de equipo, catas o tu propio bingo privado. Nos encargamos del café, la comida y el montaje.',
-    bullets: [
-      'Capacidad hasta 60 personas de pie',
-      'Menú a medida, con opciones veganas',
-      'Proyector y sonido disponibles',
-      'Posibilidad de cierre exclusivo',
-    ],
-  },
-  coffeeBreak: {
-    label: 'Llevar café a tu evento',
-    tipoDefault: 'Coffee break de oficina',
-    eyebrow: 'Coffee Break · Prego a eventos',
-    titulo: 'Llevamos el café a tu oficina',
-    desc: 'Armamos una barra de café de especialidad y pastelería donde tú nos necesites: oficinas, seminarios o eventos corporativos.',
-    bullets: [
-      'Barra de café con barista incluido',
-      'Selección de pastelería y snacks',
-      'Coordinamos montaje y desmontaje',
-      'Cotización según N° de personas y ubicación',
-    ],
-  },
-} as const
-
 export default function ReservaEventos() {
-  const [modalidad, setModalidad] = useState<keyof typeof MODALIDADES>('local')
   const [enviado, setEnviado] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const m = MODALIDADES[modalidad]
 
   async function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
-    setCargando(true)
 
     const datos = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>
 
-    // El backend no tiene un campo "lugar": lo anteponemos al mensaje libre
-    // para no perder el dato en las cotizaciones de coffee break.
-    if (datos.lugar) {
-      datos.mensaje = `Lugar: ${datos.lugar}${datos.mensaje ? `\n\n${datos.mensaje}` : ''}`
-      delete datos.lugar
+    const personas = Number(datos.personas)
+    if (personas > 50) {
+      setError('El máximo son 50 personas para este servicio.')
+      return
     }
 
+    setCargando(true)
     try {
       const res = await fetch('/api/eventos/cotizar', {
         method: 'POST',
@@ -103,52 +82,40 @@ export default function ReservaEventos() {
   return (
     <section id="eventos" className="scroll-mt-24">
       <div className="rounded-2xl border border-salvia-100 bg-white p-7 sm:p-10">
-        {/* Toggle de modalidad: mismo formulario, distinto encabezado y tipo de evento */}
-        <div className="mx-auto flex max-w-md rounded-full border border-salvia-100 bg-salvia-50 p-1 text-sm font-medium">
-          {(
-            Object.entries(MODALIDADES) as [
-              keyof typeof MODALIDADES,
-              (typeof MODALIDADES)[keyof typeof MODALIDADES],
-            ][]
-          ).map(([key, mod]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setModalidad(key)}
-                className={`flex-1 rounded-full px-4 py-2 transition ${
-                  modalidad === key
-                    ? 'bg-salvia-600 text-durazno-50 shadow-sm'
-                    : 'text-salvia-700 hover:bg-salvia-100'
-                }`}
-              >
-                {mod.label}
-              </button>
-            ))}
+        <div className="text-center">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-salvia-400">
+            Coffee Break & Desayunos Corporativos
+          </p>
+          <h2 className="mt-2 text-3xl font-bold text-salvia-800">
+            Llevamos Prego a tu empresa
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-cafe-600">
+            Acompañamos tus reuniones, eventos y encuentros corporativos con propuestas de
+            coffee break en formato buffet, mesas de directorio y cajas corporativas de
+            desayunos, cuidando cada elemento desde la presentación hasta el servicio.
+            Diseñamos cada pedido a medida, adaptándonos a tus necesidades, estilo y tipo
+            de evento.
+          </p>
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1.1fr]">
           <div>
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-salvia-400">
-              {m.eyebrow}
-            </p>
-            <h2 className="mt-2 text-3xl font-bold text-salvia-800">{m.titulo}</h2>
-            <p className="mt-4 text-cafe-600">{m.desc}</p>
-
-            <ul className="mt-6 space-y-2.5 text-sm text-cafe-600">
-              {m.bullets.map((t) => (
-                <li key={t} className="flex gap-2.5">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-salvia-400" />
-                  {t}
+            <h3 className="text-lg font-semibold text-salvia-800">Nuestros servicios</h3>
+            <ul className="mt-4 space-y-4">
+              {SERVICIOS.map((s) => (
+                <li key={s.nombre} className="rounded-xl border border-salvia-100 p-4">
+                  <p className="font-medium text-salvia-800">{s.nombre}</p>
+                  <p className="mt-1 text-sm text-cafe-600">{s.desc}</p>
                 </li>
               ))}
             </ul>
+            <p className="mt-5 text-sm text-cafe-600">
+              Podemos personalizar los pedidos con mensajes especiales o identidad
+              corporativa, logrando una experiencia coherente y memorable para cada empresa.
+            </p>
           </div>
 
           <form onSubmit={enviar} className="space-y-4">
-            {modalidad === 'coffeeBreak' && (
-              <input type="hidden" name="tipo" value={MODALIDADES.coffeeBreak.tipoDefault} />
-            )}
-
             <div className="grid gap-4 sm:grid-cols-2">
               <label className={label}>
                 Nombre
@@ -165,32 +132,19 @@ export default function ReservaEventos() {
                 Teléfono
                 <input name="telefono" maxLength={20} className={input} placeholder="Opcional" />
               </label>
-              {modalidad === 'local' ? (
-                <label className={label}>
-                  Tipo de evento
-                  <select name="tipo" required className={input} defaultValue="">
-                    <option value="" disabled>
-                      Selecciona…
+              <label className={label}>
+                Servicio de interés
+                <select name="tipo" required className={input} defaultValue="">
+                  <option value="" disabled>
+                    Selecciona…
+                  </option>
+                  {SERVICIOS.map((s) => (
+                    <option key={s.nombre} value={s.nombre}>
+                      {s.nombre}
                     </option>
-                    {TIPOS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ) : (
-                <label className={label}>
-                  Lugar del evento
-                  <input
-                    name="lugar"
-                    required
-                    maxLength={120}
-                    className={input}
-                    placeholder="Dirección de la oficina o venue"
-                  />
-                </label>
-              )}
+                  ))}
+                </select>
+              </label>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -204,7 +158,7 @@ export default function ReservaEventos() {
                   name="personas"
                   type="number"
                   min={5}
-                  max={200}
+                  max={50}
                   required
                   className={input}
                   placeholder="30"
@@ -213,13 +167,13 @@ export default function ReservaEventos() {
             </div>
 
             <label className={label}>
-              Cuéntanos más
+              Cuéntanos tu idea
               <textarea
                 name="mensaje"
                 rows={3}
                 maxLength={800}
                 className={`${input} resize-none`}
-                placeholder="Horario, requerimientos especiales, presupuesto…"
+                placeholder="Ubicación, horario, requerimientos especiales, identidad corporativa…"
               />
             </label>
 

@@ -4,13 +4,12 @@ import { usePathname, useRouter } from 'next/navigation'
 import { supabaseBrowser } from '@/lib/supabase/client'
 
 const SECCIONES = [
-  { href: '/admin', label: 'Inicio' },
   { href: '/admin/eventos', label: 'Eventos' },
-  { href: '/admin/reservas', label: 'Reservas' },
+  { href: '/admin/reservas', label: 'Reserva bingos' },
 ]
 
-// Barra de navegación compartida entre todas las páginas de /admin, para
-// poder moverse entre secciones sin depender del botón "atrás" del navegador.
+// Cabecera compartida entre todas las páginas de /admin: título, pestañas
+// de navegación y cierre de sesión.
 export default function AdminNav() {
   const pathname = usePathname()
   const router = useRouter()
@@ -22,10 +21,25 @@ export default function AdminNav() {
   }
 
   return (
-    <nav className="mx-auto mb-8 flex max-w-3xl flex-wrap items-center justify-between gap-3 border-b border-salvia-100 pb-4">
-      <div className="flex flex-wrap gap-1.5">
+    <div className="mx-auto mb-8 max-w-3xl">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold text-salvia-800">Panel de administración</h1>
+          <p className="mt-1 text-sm text-salvia-700">
+            Gestión de eventos, reservas y control de acceso.
+          </p>
+        </div>
+        <button
+          onClick={cerrarSesion}
+          className="shrink-0 rounded-lg border border-salvia-100 px-3 py-1.5 text-sm font-medium text-salvia-700 hover:bg-salvia-50"
+        >
+          Cerrar sesión
+        </button>
+      </div>
+
+      <nav className="mt-5 flex flex-wrap gap-1.5 border-b border-salvia-100 pb-4">
         {SECCIONES.map((s) => {
-          const activo = s.href === '/admin' ? pathname === '/admin' : pathname.startsWith(s.href)
+          const activo = pathname.startsWith(s.href)
           return (
             <a
               key={s.href}
@@ -40,13 +54,7 @@ export default function AdminNav() {
             </a>
           )
         })}
-      </div>
-      <button
-        onClick={cerrarSesion}
-        className="shrink-0 rounded-lg border border-salvia-100 px-3 py-1.5 text-sm font-medium text-salvia-700 hover:bg-salvia-50"
-      >
-        Cerrar sesión
-      </button>
-    </nav>
+      </nav>
+    </div>
   )
 }

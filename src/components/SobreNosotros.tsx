@@ -28,8 +28,8 @@ export default function SobreNosotros() {
           <div className="relative min-h-[20rem] lg:min-h-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/fotos/pareja-en-mesa.jpg"
-              alt="Pareja compartiendo un desayuno frente al mural con el logo de Prego"
+              src="/fotos/mosaico-platos.jpg"
+              alt="Avocado toast, ensalada y huevos con tocino recién servidos"
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />

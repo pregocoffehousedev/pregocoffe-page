@@ -6,7 +6,6 @@ import ParaLlevar from '@/components/ParaLlevar'
 import Talleres from '@/components/Talleres'
 import Galeria from '@/components/Galeria'
 import Resenas from '@/components/Resenas'
-import InstagramFeed from '@/components/InstagramFeed'
 import Visitanos from '@/components/Visitanos'
 import ReservaEventos from '@/components/ReservaEventos'
 
@@ -24,7 +23,6 @@ export default function Home() {
       <Galeria />
       {/* La prueba social va después de ver producto y local */}
       <Resenas />
-      <InstagramFeed />
       <Visitanos />
       <ReservaEventos />
     </div>

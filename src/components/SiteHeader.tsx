@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import { supabaseBrowser } from '@/lib/supabase/client'
+import { useBingoVigente } from '@/lib/useBingoVigente'
 
 // Header compartido. En /admin, el botón "Entradas" (irrelevante para el
 // equipo, ya que ahí mismo se gestionan los eventos) se reemplaza por
@@ -11,6 +12,7 @@ export default function SiteHeader() {
   const router = useRouter()
   const enAdmin = pathname.startsWith('/admin')
   const enInicioAdmin = pathname === '/admin'
+  const bingoVigente = useBingoVigente()
 
   async function cerrarSesion() {
     await supabaseBrowser().auth.signOut()
@@ -59,14 +61,14 @@ export default function SiteHeader() {
             >
               Cerrar sesión
             </button>
-          ) : (
+          ) : bingoVigente ? (
             <a
               href="/evento"
               className="rounded-full bg-salvia-600 px-4 py-2 text-sm font-medium text-durazno-50 transition hover:bg-salvia-700"
             >
               Entradas
             </a>
-          )}
+          ) : null}
         </div>
       </nav>
     </header>

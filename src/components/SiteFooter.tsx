@@ -2,19 +2,21 @@
 
 import { usePathname } from 'next/navigation'
 import { LOCAL } from '@/data/local'
+import { useBingoVigente } from '@/lib/useBingoVigente'
 
 // Footer del sitio público. No se muestra en /admin: es contenido para
 // visitantes, no para el equipo gestionando el panel.
 export default function SiteFooter() {
   const pathname = usePathname()
+  const bingoVigente = useBingoVigente()
   if (pathname.startsWith('/admin')) return null
 
   return (
     <footer className="mt-20 border-t border-salvia-100 bg-white/50">
       <div className="grid w-full gap-8 px-5 py-12 sm:grid-cols-3 sm:px-8 lg:px-12">
-        <div>
+        <div className="text-center sm:text-left">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/logo-footer.png" alt="Prego Coffee House" className="h-28 w-28" />
+          <img src="/logos/logo-footer.png" alt="Prego Coffee House" className="mx-auto h-28 w-28 sm:mx-0" />
           <p className="mt-3 text-sm text-cafe-600">
             {LOCAL.descriptor}.
           </p>
@@ -40,7 +42,7 @@ export default function SiteFooter() {
           </address>
         </div>
 
-        <div className="text-sm">
+        <div className="hidden text-sm sm:block">
           <p className="font-semibold text-salvia-800">Enlaces</p>
           <ul className="mt-3 space-y-1.5 text-cafe-600">
             {[
@@ -48,7 +50,7 @@ export default function SiteFooter() {
               ['Para llevar', '/#para-llevar'],
               ['Galería', '/#galeria'],
               ['Coffee Break corporativo', '/#eventos'],
-              ['Entradas Bingo', '/evento'],
+              ...(bingoVigente ? [['Entradas Bingo', '/evento']] : []),
             ].map(([texto, href]) => (
               <li key={href}>
                 <a href={href} className="transition hover:text-salvia-700">

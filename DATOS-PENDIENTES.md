@@ -31,13 +31,6 @@ en silencio, pero tampoco llega por email.
 - [ ] Confirmar que `public/logos/prego-logo.png` (usado en el Hero de la
       home) es la versión final del logo.
 
-## Instagram Feed
-
-- [ ] ¿Quieren mostrar el feed real de Instagram en la web? Si sí, hay que
-      generar un token de Instagram Basic Display API (caduca cada 60 días,
-      hay que renovarlo) y cargarlo como `INSTAGRAM_TOKEN`.
-- [ ] Si no se configura, la sección simplemente no aparece.
-
 ## Acceso al panel admin
 
 - [ ] ¿Quién del equipo va a estar a cargo de confirmar pagos por

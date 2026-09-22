@@ -216,7 +216,7 @@ export default function FormularioCompra({
         </button>
 
         <p className="mt-3 text-center text-xs leading-relaxed text-cafe-400">
-          Tu cupo queda reservado 5 minutos mientras transfieres y nos avisas.
+          Tu cupo queda reservado 10 minutos mientras transfieres y nos avisas.
         </p>
       </div>
     </form>
@@ -340,7 +340,7 @@ function InstruccionesTransferencia({
       <div className="border-b border-salvia-100 bg-salvia-50/60 px-6 py-5">
         <h2 className="font-semibold text-salvia-800">Cupo reservado</h2>
         <p className="mt-0.5 text-sm text-cafe-600">
-          Transfiere <strong>{clp(reserva.montoTotal)}</strong> en los próximos 5
+          Transfiere <strong>{clp(reserva.montoTotal)}</strong> en los próximos 10
           minutos para asegurar tu entrada.
         </p>
       </div>

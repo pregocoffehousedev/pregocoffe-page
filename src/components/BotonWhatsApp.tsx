@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { LOCAL } from '@/data/local'
 
 /**
  * Burbuja flotante de WhatsApp.
  * Aparece al hacer scroll para no competir con el hero, y en móvil
  * se esconde cuando hay un formulario enfocado (evita tapar el botón
- * de envío con el teclado abierto).
+ * de envío con el teclado abierto). No se muestra dentro del panel
+ * admin: es contenido para visitantes del sitio público, no para el equipo.
  */
 export default function BotonWhatsApp() {
+  const pathname = usePathname()
   const [visible, setVisible] = useState(false)
   const [escribiendo, setEscribiendo] = useState(false)
 
@@ -36,6 +39,8 @@ export default function BotonWhatsApp() {
       document.removeEventListener('focusout', activo)
     }
   }, [])
+
+  if (pathname?.startsWith('/admin')) return null
 
   const numero = LOCAL.telefono.replace(/\D/g, '')
   const mensaje = encodeURIComponent(

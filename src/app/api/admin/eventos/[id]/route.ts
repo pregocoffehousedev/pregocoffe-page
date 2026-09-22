@@ -7,20 +7,32 @@ import { normalizarInstagram } from '@/lib/format'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const Body = z.object({
-  nombre: z.string().trim().min(1).max(120).optional(),
-  descripcion: z.string().trim().max(2000).optional().or(z.literal('')),
-  categoria: z.enum(['bingo', 'taller']).optional(),
-  instructor: z.string().trim().max(120).optional().or(z.literal('')),
-  instructorInstagram: z.string().trim().max(60).optional().or(z.literal('')),
-  fecha: z.string().min(1).optional(),
-  ventaAbreEn: z.string().min(1).nullable().optional(),
-  lugar: z.string().trim().min(1).max(160).optional(),
-  precio_clp: z.number().int().min(1).optional(),
-  capacidad_total: z.number().int().min(1).optional(),
-  max_por_compra: z.number().int().min(1).max(20).optional(),
-  activo: z.boolean().optional(),
-})
+const Body = z
+  .object({
+    nombre: z.string().trim().min(1).max(120).optional(),
+    descripcion: z.string().trim().max(2000).optional().or(z.literal('')),
+    categoria: z.enum(['bingo', 'taller']).optional(),
+    instructor: z.string().trim().max(120).optional().or(z.literal('')),
+    instructorInstagram: z.string().trim().max(60).optional().or(z.literal('')),
+    fecha: z.string().min(1).optional(),
+    ventaAbreEn: z.string().min(1).nullable().optional(),
+    lugar: z.string().trim().min(1).max(160).optional(),
+    precio_clp: z.number().int().min(1).optional(),
+    capacidad_total: z.number().int().min(1).optional(),
+    max_por_compra: z.number().int().min(1).max(20).optional(),
+    activo: z.boolean().optional(),
+  })
+  .superRefine((d, ctx) => {
+    // Solo se puede validar aquí cuando el payload trae categoría: un PATCH
+    // parcial que no la incluya no cambia si el evento es taller o no.
+    if (d.categoria === 'taller' && !d.instructorInstagram) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El Instagram del instructor es obligatorio para talleres.',
+        path: ['instructorInstagram'],
+      })
+    }
+  })
 
 // Editar un evento existente. La capacidad no puede bajar de lo ya vendido.
 export async function PATCH(

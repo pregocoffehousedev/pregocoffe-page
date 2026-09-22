@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   const db = supabaseAdmin()
 
   // 3) Reserva ATÓMICA — aquí es imposible sobrevender.
-  // Único método: transferencia. Sin checkout automático, 5 minutos para
+  // Único método: transferencia. Sin checkout automático, 10 minutos para
   // pagar y avisar. El teléfono es el único dato de contacto: por ahí se
   // coordina el comprobante y se reenvían las entradas.
   const { data, error } = await db.rpc('reservar_entradas', {
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     p_cantidad: cantidad,
     p_nombre: nombre,
     p_telefono: telefono,
-    p_ttl_minutos: 5,
+    p_ttl_minutos: 10,
   })
 
   if (error) {

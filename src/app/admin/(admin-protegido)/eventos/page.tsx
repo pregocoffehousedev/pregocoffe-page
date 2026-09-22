@@ -280,16 +280,16 @@ export default function EventosAdminPage() {
                 />
               </label>
               <label className={label}>
-                Instagram del instructor (opcional)
+                Instagram del instructor
                 <input
+                  required
                   value={form.instructorInstagram}
                   onChange={(e) => setForm({ ...form, instructorInstagram: e.target.value })}
                   className={input}
                   placeholder="usuario, sin @"
                 />
                 <span className="mt-1 block text-xs font-normal text-cafe-400">
-                  Si lo llenas, el botón de inscripción va directo a esta cuenta
-                  en vez de a la del local.
+                  El botón de inscripción del taller va directo a esta cuenta.
                 </span>
               </label>
             </div>
@@ -405,7 +405,7 @@ export default function EventosAdminPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-bold text-salvia-800">Eventos</h1>
         <button
           onClick={abrirNuevo}
@@ -448,10 +448,10 @@ export default function EventosAdminPage() {
             .map((ev) => (
             <li key={ev.id} className="rounded-xl border border-salvia-100 bg-white p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-salvia-800">{ev.nombre}</p>
-                    <span className="rounded-full bg-salvia-50 px-2 py-0.5 text-xs font-medium text-salvia-700">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="break-words font-semibold text-salvia-800">{ev.nombre}</p>
+                    <span className="shrink-0 rounded-full bg-salvia-50 px-2 py-0.5 text-xs font-medium text-salvia-700">
                       {CATEGORIAS.find((c) => c.valor === ev.categoria)?.label ?? ev.categoria}
                     </span>
                   </div>
@@ -475,7 +475,7 @@ export default function EventosAdminPage() {
                 </span>
               </div>
 
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   onClick={() => abrirEditar(ev)}
                   className="rounded-lg border border-salvia-100 px-4 py-2 text-sm font-medium text-salvia-700 hover:bg-salvia-50"

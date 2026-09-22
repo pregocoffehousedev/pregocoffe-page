@@ -31,7 +31,6 @@ const FILTROS: { valor: Estado | 'todas'; etiqueta: string }[] = [
   { valor: 'pagada', etiqueta: 'Confirmadas' },
   { valor: 'expirada', etiqueta: 'Expiradas' },
   { valor: 'cancelada', etiqueta: 'Canceladas' },
-  { valor: 'todas', etiqueta: 'Todas' },
 ]
 
 // Panel único de reservas: confirmar pagos por transferencia, editar datos
@@ -49,6 +48,14 @@ export default function ReservasAdminPage() {
   const [codigosPorReserva, setCodigosPorReserva] = useState<Record<string, string[]>>({})
   const [editando, setEditando] = useState<Reserva | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // "Ahora" en un solo reloj compartido: así todas las reservas pendientes
+  // pasan a "Vencida" en el mismo tick, sin un setInterval por tarjeta.
+  const [ahora, setAhora] = useState(() => Date.now())
+
+  useEffect(() => {
+    const id = setInterval(() => setAhora(Date.now()), 1000)
+    return () => clearInterval(id)
+  }, [])
 
   async function cargar(estadoFiltro: Estado | 'todas' = filtro) {
     setCargando(true)
@@ -151,7 +158,8 @@ export default function ReservasAdminPage() {
       <div className="mt-4 flex gap-1.5 rounded-lg border border-salvia-100 bg-white p-1">
         <button
           onClick={() => setTab('reservas')}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition ${
+          title="Reservas"
+          className={`min-w-0 flex-1 rounded-md px-2 py-2 text-xs font-medium transition sm:px-3 sm:text-sm ${
             tab === 'reservas'
               ? 'bg-salvia-600 text-white'
               : 'text-salvia-700 hover:bg-salvia-50'
@@ -161,23 +169,25 @@ export default function ReservasAdminPage() {
         </button>
         <button
           onClick={() => setTab('validar')}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition ${
+          title="Validar entradas"
+          className={`min-w-0 flex-1 rounded-md px-2 py-2 text-xs font-medium transition sm:px-3 sm:text-sm ${
             tab === 'validar'
               ? 'bg-salvia-600 text-white'
               : 'text-salvia-700 hover:bg-salvia-50'
           }`}
         >
-          Validar entradas
+          Validar
         </button>
         <button
           onClick={() => setTab('espera')}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition ${
+          title="Lista de espera"
+          className={`min-w-0 flex-1 rounded-md px-2 py-2 text-xs font-medium transition sm:px-3 sm:text-sm ${
             tab === 'espera'
               ? 'bg-salvia-600 text-white'
               : 'text-salvia-700 hover:bg-salvia-50'
           }`}
         >
-          Lista de espera
+          Espera
         </button>
       </div>
 
@@ -191,7 +201,7 @@ export default function ReservasAdminPage() {
         </div>
       ) : (
         <>
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               {FILTROS.map((f) => (
                 <button
@@ -252,15 +262,16 @@ export default function ReservasAdminPage() {
             <ul className="mt-6 space-y-3">
               {reservasFiltradas.map((r) => {
                 const evento = Array.isArray(r.eventos) ? r.eventos[0] : r.eventos
-                const expirada = r.estado === 'pendiente' && new Date(r.expira_en) < new Date()
+                const restanteMs = new Date(r.expira_en).getTime() - ahora
+                const expirada = r.estado === 'pendiente' && restanteMs <= 0
                 const codigos = codigosPorReserva[r.id]
                 return (
                   <li key={r.id} className="rounded-xl border border-salvia-100 bg-white p-4 sm:p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-salvia-800">{r.comprador_nombre}</p>
+                      <div className="min-w-0">
+                        <p className="break-words font-semibold text-salvia-800">{r.comprador_nombre}</p>
                         <p className="text-sm text-cafe-600">{r.comprador_telefono}</p>
-                        <p className="mt-1 text-sm text-cafe-600">
+                        <p className="mt-1 break-words text-sm text-cafe-600">
                           {evento?.nombre} ·{' '}
                           <strong>
                             {r.cantidad} {r.cantidad === 1 ? 'persona' : 'personas'}
@@ -269,7 +280,12 @@ export default function ReservasAdminPage() {
                         </p>
                       </div>
 
-                      <EstadoBadge estado={r.estado} expirada={expirada} />
+                      <div className="shrink-0 flex flex-col items-end gap-1">
+                        <EstadoBadge estado={r.estado} expirada={expirada} />
+                        {r.estado === 'pendiente' && !expirada && (
+                          <TiempoRestante restanteMs={restanteMs} />
+                        )}
+                      </div>
                     </div>
 
                     {r.estado === 'pendiente' && expirada && (
@@ -326,6 +342,27 @@ export default function ReservasAdminPage() {
         </>
       )}
     </div>
+  )
+}
+
+// Muestra cuánto le queda a la reserva antes de vencer. El valor viene
+// calculado desde el reloj compartido del padre (ver "ahora" en
+// ReservasAdminPage), así todas las tarjetas cambian en el mismo tick.
+function TiempoRestante({ restanteMs }: { restanteMs: number }) {
+  if (restanteMs <= 0) return null
+
+  const minutos = Math.floor(restanteMs / 60_000)
+  const segundos = Math.floor((restanteMs % 60_000) / 1_000)
+  const porVencer = restanteMs <= 2 * 60_000
+
+  return (
+    <span
+      className={`text-xs font-medium tabular-nums ${
+        porVencer ? 'text-red-600' : 'text-cafe-500'
+      }`}
+    >
+      Vence en {minutos}:{String(segundos).padStart(2, '0')}
+    </span>
   )
 }
 

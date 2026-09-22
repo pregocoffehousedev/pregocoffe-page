@@ -101,7 +101,7 @@ create or replace function reservar_entradas(
   p_cantidad    integer,
   p_nombre      text,
   p_telefono    text,
-  p_ttl_minutos integer default 5
+  p_ttl_minutos integer default 10
 )
 returns table (
   reserva_id      uuid,

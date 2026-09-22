@@ -26,26 +26,36 @@ export async function GET() {
   return NextResponse.json({ eventos: data ?? [] })
 }
 
-const Body = z.object({
-  slug: z
-    .string()
-    .trim()
-    .min(1)
-    .max(80)
-    .regex(/^[a-z0-9-]+$/, 'Usa solo minúsculas, números y guiones.'),
-  nombre: z.string().trim().min(1).max(120),
-  descripcion: z.string().trim().max(2000).optional().or(z.literal('')),
-  categoria: z.enum(['bingo', 'taller']).default('bingo'),
-  instructor: z.string().trim().max(120).optional().or(z.literal('')),
-  instructorInstagram: z.string().trim().max(60).optional().or(z.literal('')),
-  fecha: z.string().min(1),
-  ventaAbreEn: z.string().min(1).nullable().optional(),
-  lugar: z.string().trim().min(1).max(160),
-  precio_clp: z.number().int().min(1),
-  capacidad_total: z.number().int().min(1),
-  max_por_compra: z.number().int().min(1).max(20).default(6),
-  activo: z.boolean().default(true),
-})
+const Body = z
+  .object({
+    slug: z
+      .string()
+      .trim()
+      .min(1)
+      .max(80)
+      .regex(/^[a-z0-9-]+$/, 'Usa solo minúsculas, números y guiones.'),
+    nombre: z.string().trim().min(1).max(120),
+    descripcion: z.string().trim().max(2000).optional().or(z.literal('')),
+    categoria: z.enum(['bingo', 'taller']).default('bingo'),
+    instructor: z.string().trim().max(120).optional().or(z.literal('')),
+    instructorInstagram: z.string().trim().max(60).optional().or(z.literal('')),
+    fecha: z.string().min(1),
+    ventaAbreEn: z.string().min(1).nullable().optional(),
+    lugar: z.string().trim().min(1).max(160),
+    precio_clp: z.number().int().min(1),
+    capacidad_total: z.number().int().min(1),
+    max_por_compra: z.number().int().min(1).max(20).default(6),
+    activo: z.boolean().default(true),
+  })
+  .superRefine((d, ctx) => {
+    if (d.categoria === 'taller' && !d.instructorInstagram) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'El Instagram del instructor es obligatorio para talleres.',
+        path: ['instructorInstagram'],
+      })
+    }
+  })
 
 // Crear un evento nuevo.
 export async function POST(req: Request) {

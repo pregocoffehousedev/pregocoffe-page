@@ -176,7 +176,7 @@ export default async function EventoPage({
             <h2 className="text-lg font-semibold text-salvia-800">Cómo funciona</h2>
             <ol className="mt-4 space-y-4">
               {[
-                ['Compra tu entrada', 'Reserva tu cupo y transfiere el monto. Tienes 5 minutos para avisarnos por WhatsApp.'],
+                ['Compra tu entrada', 'Reserva tu cupo y transfiere el monto. Tienes 10 minutos para avisarnos por WhatsApp.'],
                 ['Recibe tu entrada', 'Apenas confirmamos tu pago, te la enviamos por el mismo WhatsApp.'],
                 ['Preséntalo en la puerta', 'Impreso o desde tu teléfono. Cada código sirve una sola vez.'],
               ].map(([t, d], i) => (

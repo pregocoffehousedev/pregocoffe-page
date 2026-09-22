@@ -146,7 +146,7 @@ function reservarEntradas(args: {
 
   const monto = evento.precio_clp * args.p_cantidad
   const expiraEn = new Date(
-    Date.now() + (args.p_ttl_minutos ?? 5) * 60_000,
+    Date.now() + (args.p_ttl_minutos ?? 10) * 60_000,
   ).toISOString()
 
   const reserva: ReservaRow = {

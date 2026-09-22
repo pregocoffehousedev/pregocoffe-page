@@ -71,8 +71,16 @@ export default function ContadorVenta({ ventaAbreEn, onAbierta }: Props) {
         ))}
       </div>
 
+      <button
+        type="button"
+        disabled
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-salvia-600 py-3.5 font-medium text-durazno-50 opacity-50 disabled:cursor-not-allowed"
+      >
+        Comprar entradas
+      </button>
+
       <p className="mt-4 text-xs text-cafe-400">
-        Vuelve a esta página cuando se abra la venta para reservar tu cupo.
+        El botón se activa apenas se abra la venta — no necesitas recargar la página.
       </p>
     </div>
   )

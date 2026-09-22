@@ -60,8 +60,8 @@ export default function ListaEsperaAdmin() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-salvia-700">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="min-w-0 text-sm text-salvia-700">
           Personas que dejaron su WhatsApp cuando el evento estaba agotado, en
           orden de llegada.
         </p>
@@ -87,11 +87,11 @@ export default function ListaEsperaAdmin() {
           {lista.map((a, i) => (
             <li key={a.id} className="rounded-xl border border-salvia-100 bg-white p-4 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-semibold uppercase tracking-wide text-salvia-400">
                     #{i + 1}
                   </p>
-                  <p className="font-semibold text-salvia-800">{a.nombre}</p>
+                  <p className="break-words font-semibold text-salvia-800">{a.nombre}</p>
                   <p className="text-sm text-cafe-600">{a.telefono}</p>
                 </div>
                 {a.notificado && (

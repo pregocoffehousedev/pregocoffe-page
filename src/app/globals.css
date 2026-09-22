@@ -15,6 +15,14 @@
   }
 }
 
+html,
+body {
+  /* Red de seguridad: nada debe poder empujar la página a scrollear
+     horizontalmente, sin importar qué elemento se desborde por error. */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   @apply bg-durazno-50 text-cafe-900 antialiased;
 }

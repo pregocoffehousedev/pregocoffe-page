@@ -16,7 +16,11 @@ export default function SiteFooter() {
       <div className="grid w-full gap-8 px-5 py-12 sm:grid-cols-3 sm:px-8 lg:px-12">
         <div className="text-center sm:text-left">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/logo-footer.png" alt="Prego Coffee House" className="mx-auto h-28 w-28 sm:mx-0" />
+          <img
+            src="/logos/prego-footer.png"
+            alt="Prego Coffee House"
+            className="mx-auto h-28 w-52 rounded-xl object-cover sm:mx-0"
+          />
           <p className="mt-3 text-sm text-cafe-600">
             {LOCAL.descriptor}.
           </p>

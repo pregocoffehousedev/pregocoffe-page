@@ -4,20 +4,62 @@ import { useState } from 'react'
 
 const SERVICIOS = [
   {
-    nombre: 'Coffee Break Buffet',
-    desc: 'Propuestas para reuniones, capacitaciones y eventos corporativos, con preparaciones artesanales dulces y saladas.',
+    nombre: 'Coffee 1 · Prego Clásico',
+    precio: '$8.500 + IVA por persona',
+    items: [
+      '2 mini sándwiches clásicos.',
+      '1 mini brownie artesanal.',
+      '1 mini pie de limón.',
+      '3 galletas artesanales.',
+      '1 bebestible a elección.',
+    ],
   },
   {
-    nombre: 'Mesas de Directorio',
-    desc: 'Ideales para encuentros ejecutivos y reuniones importantes, con una presentación cuidada y personalizada.',
+    nombre: 'Coffee 2 · Prego Artesanal',
+    precio: '$12.500 + IVA por persona',
+    items: [
+      '3 mini sándwiches clásicos.',
+      '1 brocheta de frutas de estación.',
+      '2 mini pastelitos artesanales.',
+      '2 mini dulces de pastelería.',
+      '1 bebestible a elección.',
+    ],
   },
   {
-    nombre: 'Cajas Corporativas de Desayunos',
-    desc: 'Perfectas para regalar, sorprender o enviar a equipos de trabajo.',
+    nombre: 'Coffee 3 · Prego de la Casa',
+    precio: '$15.500 + IVA por persona',
+    items: [
+      '2 mini sándwiches premium.',
+      '1 porción de frutas de estación.',
+      '1 vasito de yogur con granola.',
+      '1 mini rollito de canela.',
+      '1 mini muffin artesanal.',
+      '2 bebestibles a elección.',
+    ],
   },
   {
-    nombre: 'Barra de Café de Especialidad',
-    desc: 'Servicio de café de especialidad para eventos, con opción de acompañarlo de pastelería artesanal, montaje y desmontaje. La barra de café no incluye barista.',
+    nombre: 'Coffee 4 · Prego Signature',
+    precio: '$18.500 + IVA por persona',
+    items: [
+      '3 mini sándwiches premium.',
+      '1 porción de frutas de estación.',
+      '1 mini rollito de canela.',
+      '4 mini pastelitos artesanales surtidos.',
+      '2 bebestibles a elección.',
+    ],
+  },
+  {
+    nombre: 'Coffee 5 · Prego Equilibrio',
+    precio: '$16.500 + IVA por persona',
+    items: [
+      '2 mini sándwiches en pan integral.',
+      '1 vasito de yogur natural con granola.',
+      '1 porción de frutas de estación.',
+      '1 mini cheesecake sin azúcar añadida.',
+      '1 mini alfajor sin azúcar añadida.',
+      '1 mini brownie sin azúcar añadida.',
+      '2 bebestibles a elección.',
+    ],
   },
 ] as const
 
@@ -25,6 +67,16 @@ export default function ReservaEventos() {
   const [enviado, setEnviado] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [expandidos, setExpandidos] = useState<Set<string>>(new Set())
+
+  function alternarExpandido(nombre: string) {
+    setExpandidos((prev) => {
+      const next = new Set(prev)
+      if (next.has(nombre)) next.delete(nombre)
+      else next.add(nombre)
+      return next
+    })
+  }
 
   async function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -90,29 +142,60 @@ export default function ReservaEventos() {
             Llevamos Prego a tu empresa
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-cafe-600">
-            Acompañamos tus reuniones, eventos y encuentros corporativos con propuestas de
-            coffee break en formato buffet, mesas de directorio y cajas corporativas de
-            desayunos, cuidando cada elemento desde la presentación hasta el servicio.
-            Diseñamos cada pedido a medida, adaptándonos a tus necesidades, estilo y tipo
-            de evento.
+            Café de especialidad, panadería y pastelería artesanal, con propuestas dulces
+            y saladas para reuniones, celebraciones y encuentros corporativos.
           </p>
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1.1fr]">
           <div>
-            <h3 className="text-lg font-semibold text-salvia-800">Nuestros servicios</h3>
+            <h3 className="text-lg font-semibold text-salvia-800">Nuestros coffee breaks</h3>
             <ul className="mt-4 space-y-4">
-              {SERVICIOS.map((s) => (
-                <li key={s.nombre} className="rounded-xl border border-salvia-100 p-4">
-                  <p className="font-medium text-salvia-800">{s.nombre}</p>
-                  <p className="mt-1 text-sm text-cafe-600">{s.desc}</p>
-                </li>
-              ))}
+              {SERVICIOS.map((s) => {
+                const abierto = expandidos.has(s.nombre)
+                return (
+                  <li key={s.nombre} className="rounded-xl border border-salvia-100 p-4">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <p className="font-medium text-salvia-800">{s.nombre}</p>
+                      <p className="text-sm font-semibold text-salvia-600">{s.precio}</p>
+                    </div>
+                    {abierto && (
+                      <ul className="mt-2 space-y-0.5 text-sm text-cafe-600">
+                        {s.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => alternarExpandido(s.nombre)}
+                      className="mt-2 text-xs font-medium text-salvia-600 underline underline-offset-2 hover:text-salvia-700"
+                    >
+                      {abierto ? 'Ver menos' : 'Ver más'}
+                    </button>
+                  </li>
+                )
+              })}
             </ul>
-            <p className="mt-5 text-sm text-cafe-600">
-              Podemos personalizar los pedidos con mensajes especiales o identidad
-              corporativa, logrando una experiencia coherente y memorable para cada empresa.
-            </p>
+            <div className="mt-5 space-y-3 text-sm text-cafe-600">
+              <p>
+                <span className="font-medium text-salvia-800">🥐 Nuestros mini sándwiches:</span>{' '}
+                clásicos (jamón y queso, ave pimentón, pasta de huevo y tomate, ave palta) y
+                premium (pollo con cebolla caramelizada, hummus con pimientos asados, jamón
+                serrano con queso crema y mediterráneo). Disponibles en mini brioche, croissant
+                o pan artesanal, según preparación.
+              </p>
+              <p>
+                <span className="font-medium text-salvia-800">☕ Bebestibles:</span> café de
+                especialidad, selección de té, jugos naturales y aguas saborizadas, según la
+                alternativa contratada.
+              </p>
+              <p className="text-xs text-cafe-400">
+                Todos nuestros coffee breaks incluyen decoración y montaje. Preparaciones
+                sujetas a disponibilidad y coordinación previa. Cantidad mínima de personas,
+                traslado y requerimientos especiales sujetos a cotización.
+              </p>
+            </div>
           </div>
 
           <form onSubmit={enviar} className="space-y-4">
@@ -133,7 +216,7 @@ export default function ReservaEventos() {
                 <input name="telefono" maxLength={20} className={input} placeholder="Opcional" />
               </label>
               <label className={label}>
-                Servicio de interés
+                Coffee de interés
                 <select name="tipo" required className={input} defaultValue="">
                   <option value="" disabled>
                     Selecciona…

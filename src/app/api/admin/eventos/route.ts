@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/adminAuth'
+import { normalizarInstagram } from '@/lib/format'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -36,6 +37,7 @@ const Body = z.object({
   descripcion: z.string().trim().max(2000).optional().or(z.literal('')),
   categoria: z.enum(['bingo', 'taller']).default('bingo'),
   instructor: z.string().trim().max(120).optional().or(z.literal('')),
+  instructorInstagram: z.string().trim().max(60).optional().or(z.literal('')),
   fecha: z.string().min(1),
   ventaAbreEn: z.string().min(1).nullable().optional(),
   lugar: z.string().trim().min(1).max(160),
@@ -68,6 +70,9 @@ export async function POST(req: Request) {
       descripcion: d.descripcion || null,
       categoria: d.categoria,
       instructor: d.instructor || null,
+      instructor_instagram: d.instructorInstagram
+        ? normalizarInstagram(d.instructorInstagram)
+        : null,
       fecha: d.fecha,
       venta_abre_en: d.ventaAbreEn || null,
       lugar: d.lugar,

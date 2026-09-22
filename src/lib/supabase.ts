@@ -41,6 +41,7 @@ export type Evento = {
   descripcion: string | null
   categoria: CategoriaEvento
   instructor: string | null
+  instructor_instagram: string | null
   fecha: string
   venta_abre_en: string | null
   lugar: string

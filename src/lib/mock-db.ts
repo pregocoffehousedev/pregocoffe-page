@@ -21,6 +21,7 @@ type EventoRow = {
   descripcion: string | null
   categoria: 'bingo' | 'taller'
   instructor: string | null
+  instructor_instagram: string | null
   fecha: string
   venta_abre_en: string | null
   lugar: string
@@ -82,6 +83,7 @@ function seed() {
       'Una tarde de bingo impartida por el equipo de Prego, con premios en plantas. Café de especialidad y pastelería disponibles para comprar aparte en el local.',
     categoria: 'bingo',
     instructor: null,
+    instructor_instagram: null,
     fecha: new Date(Date.now() + 7 * 24 * 3600_000).toISOString(),
     venta_abre_en: null,
     lugar: '1 Sur 899, Talca',

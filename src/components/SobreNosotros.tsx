@@ -6,8 +6,8 @@ const PILARES = [
     d: 'Seleccionamos lotes pequeños y los preparamos en métodos que respetan el origen.',
   },
   {
-    t: 'Masa madre de 24 horas',
-    d: 'Fermentación lenta para un pan con más sabor y mejor digestión.',
+    t: 'Panadería artesanal',
+    d: 'Elaboramos cada preparación en casa, con dedicación y buenos ingredientes.',
   },
   {
     t: 'Horneado cada mañana',
@@ -48,9 +48,9 @@ export default function SobreNosotros() {
               <div className="mt-5 space-y-4 text-cafe-700">
                 <p>
                   Abrimos en {LOCAL.comuna} el 2024 con una idea simple: que un
-                  café de especialidad y un pan bien fermentado no tienen por
-                  qué ser algo de ocasión. Tostamos, laminamos y horneamos con
-                  la paciencia que cada cosa pide.
+                  café de especialidad y una buena panadería no tienen por qué
+                  ser algo de ocasión. Tostamos, laminamos y horneamos con la
+                  paciencia que cada cosa pide.
                 </p>
                 <p>
                   Detrás de la barra hay un equipo pequeño que se sabe los

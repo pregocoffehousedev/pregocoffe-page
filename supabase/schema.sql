@@ -15,6 +15,9 @@ create table if not exists eventos (
   descripcion       text,
   categoria         categoria_evento not null default 'bingo',
   instructor        text,
+  -- Usuario de Instagram del instructor (sin @), para que en talleres con
+  -- instructor invitado el botón de inscripción vaya directo a su cuenta.
+  instructor_instagram text,
   fecha             timestamptz not null,
   -- Si no es null, las entradas no se pueden comprar hasta esta fecha/hora
   -- (aunque el evento ya esté activo). NULL = venta abierta de inmediato.

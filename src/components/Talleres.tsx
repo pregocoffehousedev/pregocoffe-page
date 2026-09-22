@@ -67,12 +67,14 @@ export default async function Talleres() {
             </dl>
 
             <a
-              href={`https://instagram.com/${LOCAL.instagram}`}
+              href={`https://instagram.com/${t.instructor_instagram || LOCAL.instagram}`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-5 flex items-center justify-center gap-2 rounded-full bg-salvia-600 px-6 py-2.5 text-sm font-semibold text-durazno-50 transition hover:bg-salvia-700"
             >
-              Inscribirme por Instagram
+              {t.instructor_instagram
+                ? `Inscribirme con @${t.instructor_instagram}`
+                : 'Inscribirme por Instagram'}
             </a>
           </article>
         ))}

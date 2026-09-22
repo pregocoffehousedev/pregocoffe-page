@@ -17,6 +17,7 @@ type Evento = {
   descripcion: string | null
   categoria: Categoria
   instructor: string | null
+  instructor_instagram: string | null
   fecha: string
   venta_abre_en: string | null
   lugar: string
@@ -33,6 +34,7 @@ type FormEvento = {
   descripcion: string
   categoria: Categoria
   instructor: string
+  instructorInstagram: string
   fecha: string
   ventaAbreEn: string
   lugar: string
@@ -48,6 +50,7 @@ const FORM_VACIO: FormEvento = {
   descripcion: '',
   categoria: 'bingo',
   instructor: '',
+  instructorInstagram: '',
   fecha: '',
   ventaAbreEn: '',
   lugar: '',
@@ -111,6 +114,7 @@ export default function EventosAdminPage() {
       descripcion: ev.descripcion ?? '',
       categoria: ev.categoria,
       instructor: ev.instructor ?? '',
+      instructorInstagram: ev.instructor_instagram ?? '',
       fecha: aInputDatetime(ev.fecha),
       ventaAbreEn: ev.venta_abre_en ? aInputDatetime(ev.venta_abre_en) : '',
       lugar: ev.lugar,
@@ -133,6 +137,7 @@ export default function EventosAdminPage() {
       descripcion: form.descripcion,
       categoria: form.categoria,
       instructor: form.instructor,
+      instructorInstagram: form.instructorInstagram,
       fecha: new Date(form.fecha).toISOString(),
       ventaAbreEn: form.ventaAbreEn ? new Date(form.ventaAbreEn).toISOString() : null,
       lugar: form.lugar,
@@ -264,15 +269,30 @@ export default function EventosAdminPage() {
           </label>
 
           {form.categoria === 'taller' && (
-            <label className={label}>
-              Instructor (quién lo imparte)
-              <input
-                value={form.instructor}
-                onChange={(e) => setForm({ ...form, instructor: e.target.value })}
-                className={input}
-                placeholder="Equipo Prego, o el nombre del instructor invitado"
-              />
-            </label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className={label}>
+                Instructor (quién lo imparte)
+                <input
+                  value={form.instructor}
+                  onChange={(e) => setForm({ ...form, instructor: e.target.value })}
+                  className={input}
+                  placeholder="Equipo Prego, o el nombre del instructor invitado"
+                />
+              </label>
+              <label className={label}>
+                Instagram del instructor (opcional)
+                <input
+                  value={form.instructorInstagram}
+                  onChange={(e) => setForm({ ...form, instructorInstagram: e.target.value })}
+                  className={input}
+                  placeholder="usuario, sin @"
+                />
+                <span className="mt-1 block text-xs font-normal text-cafe-400">
+                  Si lo llenas, el botón de inscripción va directo a esta cuenta
+                  en vez de a la del local.
+                </span>
+              </label>
+            </div>
           )}
 
           <div className="grid gap-4 sm:grid-cols-2">

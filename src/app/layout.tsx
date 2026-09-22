@@ -14,7 +14,7 @@ const oswald = Oswald({
 export const metadata: Metadata = {
   title: 'Prego Coffee House — Cafetería de especialidad y panadería en Talca',
   description:
-    'Cafetería de especialidad y panadería artesanal en 1 Sur 899, Talca. Café de origen, pan de masa madre y eventos.',
+    'Cafetería de especialidad y panadería artesanal en 1 Sur 899, Talca. Café de origen, panadería artesanal y eventos.',
   icons: {
     icon: '/fotos/logo-prego-favicon-final.png',
   },

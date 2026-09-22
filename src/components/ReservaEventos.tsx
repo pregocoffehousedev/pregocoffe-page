@@ -1,6 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+// Fecha de hoy en formato YYYY-MM-DD (zona horaria local), para bloquear
+// que el formulario de cotización agende un día que ya pasó.
+function hoyInput() {
+  const d = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
 
 const SERVICIOS = [
   {
@@ -77,6 +85,13 @@ export default function ReservaEventos() {
       return next
     })
   }
+
+  // Calculado en el cliente tras montar (no en el render del servidor) para
+  // evitar mismatches de hidratación por reloj/zona horaria del servidor.
+  const [fechaMin, setFechaMin] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    setFechaMin(hoyInput())
+  }, [])
 
   async function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -233,7 +248,13 @@ export default function ReservaEventos() {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className={label}>
                 Fecha estimada
-                <input name="fecha" type="date" required className={input} />
+                <input
+                  name="fecha"
+                  type="date"
+                  required
+                  min={fechaMin}
+                  className={input}
+                />
               </label>
               <label className={label}>
                 N° de personas

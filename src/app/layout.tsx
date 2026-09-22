@@ -17,7 +17,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
+const OG_IMAGE = {
+  url: '/fotos/mosaico-platos.jpg',
+  width: 1600,
+  height: 899,
+  alt: 'Platos de Prego Coffee House: tostadas, ensaladas y desayunos artesanales',
+}
+
 export const metadata: Metadata = {
+  metadataBase: new URL('https://pregocoffeehouse.cl'),
   title: 'Prego Coffee House — Cafetería de especialidad y panadería en Talca',
   description:
     'Cafetería de especialidad y panadería artesanal en 1 Sur 899, Talca. Café de origen, panadería artesanal y eventos.',
@@ -28,6 +36,13 @@ export const metadata: Metadata = {
     title: 'Prego Coffee House · Talca',
     description: 'Cafetería de especialidad y panadería artesanal.',
     type: 'website',
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Prego Coffee House · Talca',
+    description: 'Cafetería de especialidad y panadería artesanal.',
+    images: [OG_IMAGE.url],
   },
 }
 

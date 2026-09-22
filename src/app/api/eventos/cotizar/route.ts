@@ -12,7 +12,16 @@ const Body = z.object({
   email: z.string().trim().email().max(120),
   telefono: z.string().trim().max(20).optional().or(z.literal('')),
   tipo: z.string().trim().min(2).max(60),
-  fecha: z.string().trim().min(4).max(20),
+  fecha: z
+    .string()
+    .trim()
+    .min(4)
+    .max(20)
+    .refine((f) => {
+      const hoy = new Date()
+      hoy.setHours(0, 0, 0, 0)
+      return new Date(f) >= hoy
+    }, 'La fecha no puede ser anterior a hoy.'),
   personas: z.coerce.number().int().min(5).max(50),
   mensaje: z.string().trim().max(800).optional().or(z.literal('')),
 })

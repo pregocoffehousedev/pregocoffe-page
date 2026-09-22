@@ -46,7 +46,14 @@ export default async function Talleres() {
             key={t.id}
             className="flex flex-col rounded-2xl border border-salvia-100 bg-white p-6"
           >
-            <p className="text-sm font-medium text-salvia-600">{fechaLarga(t.fecha)}</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium text-salvia-600">{fechaLarga(t.fecha)}</p>
+              {t.agotado && (
+                <span className="shrink-0 rounded-full bg-cafe-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cafe-600">
+                  Agotado
+                </span>
+              )}
+            </div>
 
             <h3 className="mt-2 text-lg font-bold text-salvia-800">{t.nombre}</h3>
             {t.descripcion && (
@@ -66,16 +73,22 @@ export default async function Talleres() {
               </div>
             </dl>
 
-            <a
-              href={`https://instagram.com/${t.instructor_instagram || LOCAL.instagram}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 flex items-center justify-center gap-2 rounded-full bg-salvia-600 px-6 py-2.5 text-sm font-semibold text-durazno-50 transition hover:bg-salvia-700"
-            >
-              {t.instructor_instagram
-                ? `Inscribirme con @${t.instructor_instagram}`
-                : 'Inscribirme por Instagram'}
-            </a>
+            {t.agotado ? (
+              <p className="mt-5 flex items-center justify-center rounded-full bg-salvia-50 px-6 py-2.5 text-sm font-semibold text-salvia-400">
+                Sin cupos disponibles
+              </p>
+            ) : (
+              <a
+                href={`https://instagram.com/${t.instructor_instagram || LOCAL.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 flex items-center justify-center gap-2 rounded-full bg-salvia-600 px-6 py-2.5 text-sm font-semibold text-durazno-50 transition hover:bg-salvia-700"
+              >
+                {t.instructor_instagram
+                  ? `Inscribirme con @${t.instructor_instagram}`
+                  : 'Inscribirme por Instagram'}
+              </a>
+            )}
           </article>
         ))}
       </div>

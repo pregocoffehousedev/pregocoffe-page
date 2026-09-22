@@ -26,6 +26,7 @@ type Evento = {
   entradas_vendidas: number
   max_por_compra: number
   activo: boolean
+  agotado: boolean
 }
 
 type FormEvento = {
@@ -42,6 +43,7 @@ type FormEvento = {
   capacidad_total: string
   max_por_compra: string
   activo: boolean
+  agotado: boolean
 }
 
 const FORM_VACIO: FormEvento = {
@@ -58,6 +60,7 @@ const FORM_VACIO: FormEvento = {
   capacidad_total: '',
   max_por_compra: '6',
   activo: true,
+  agotado: false,
 }
 
 // Convierte un timestamptz ISO a lo que espera <input type="datetime-local">
@@ -122,6 +125,7 @@ export default function EventosAdminPage() {
       capacidad_total: String(ev.capacidad_total),
       max_por_compra: String(ev.max_por_compra),
       activo: ev.activo,
+      agotado: ev.agotado,
     })
     setEditando(ev.id)
   }
@@ -145,6 +149,7 @@ export default function EventosAdminPage() {
       capacidad_total: Number(form.capacidad_total),
       max_por_compra: Number(form.max_por_compra),
       activo: form.activo,
+      agotado: form.agotado,
     }
 
     try {
@@ -378,6 +383,26 @@ export default function EventosAdminPage() {
             Activo (visible en la página pública)
           </label>
 
+          {form.categoria === 'taller' && (
+            <div>
+              <label className="flex items-center gap-2 text-sm font-medium text-salvia-700">
+                <input
+                  type="checkbox"
+                  checked={form.agotado}
+                  onChange={(e) => setForm({ ...form, agotado: e.target.checked })}
+                  className="h-4 w-4 rounded border-salvia-300"
+                />
+                Agotado (sin cupos)
+              </label>
+              <p className="mt-2 rounded-lg bg-salvia-50 px-3 py-2.5 text-xs text-salvia-700">
+                ⚠️ Como la inscripción se coordina por Instagram (no hay conteo
+                automático de cupos), cuando un taller se llene debes marcar
+                este casillero a mano aquí para que la página principal
+                muestre el estado &quot;Agotado&quot;.
+              </p>
+            </div>
+          )}
+
           {error && (
             <p className="rounded-lg bg-red-50 px-3 py-2.5 text-sm text-red-700">{error}</p>
           )}
@@ -466,13 +491,20 @@ export default function EventosAdminPage() {
                     máx. {ev.max_por_compra} por compra
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
-                    ev.activo ? 'bg-green-100 text-green-800' : 'bg-cafe-100 text-cafe-600'
-                  }`}
-                >
-                  {ev.activo ? 'Activo' : 'Inactivo'}
-                </span>
+                <div className="flex shrink-0 flex-wrap justify-end gap-2">
+                  {ev.categoria === 'taller' && ev.agotado && (
+                    <span className="rounded-full bg-cafe-100 px-3 py-1 text-xs font-semibold text-cafe-600">
+                      Agotado
+                    </span>
+                  )}
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                      ev.activo ? 'bg-green-100 text-green-800' : 'bg-cafe-100 text-cafe-600'
+                    }`}
+                  >
+                    {ev.activo ? 'Activo' : 'Inactivo'}
+                  </span>
+                </div>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">

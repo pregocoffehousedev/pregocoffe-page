@@ -46,6 +46,7 @@ const Body = z
     capacidad_total: z.number().int().min(1),
     max_por_compra: z.number().int().min(1).max(20).default(6),
     activo: z.boolean().default(true),
+    agotado: z.boolean().default(false),
   })
   .superRefine((d, ctx) => {
     if (d.categoria === 'taller' && !d.instructorInstagram) {
@@ -90,6 +91,7 @@ export async function POST(req: Request) {
       capacidad_total: d.capacidad_total,
       max_por_compra: d.max_por_compra,
       activo: d.activo,
+      agotado: d.agotado,
     })
     .select()
     .single()

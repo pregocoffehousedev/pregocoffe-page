@@ -28,6 +28,9 @@ create table if not exists eventos (
   entradas_vendidas integer not null default 0 check (entradas_vendidas >= 0),
   max_por_compra    integer not null default 6 check (max_por_compra > 0),
   activo            boolean not null default true,
+  -- Toggle manual (no automático): los talleres se inscriben por Instagram,
+  -- sin paso por reservar_entradas, así que el equipo lo marca a mano.
+  agotado           boolean not null default false,
   creado_en         timestamptz not null default now(),
   -- Invariante duro: la BD jamás permite sobreventa
   constraint no_sobreventa check (entradas_vendidas <= capacidad_total)

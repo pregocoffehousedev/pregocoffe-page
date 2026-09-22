@@ -50,4 +50,5 @@ export type Evento = {
   entradas_vendidas: number
   max_por_compra: number
   activo: boolean
+  agotado: boolean
 }

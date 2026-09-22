@@ -21,6 +21,7 @@ const Body = z
     capacidad_total: z.number().int().min(1).optional(),
     max_por_compra: z.number().int().min(1).max(20).optional(),
     activo: z.boolean().optional(),
+    agotado: z.boolean().optional(),
   })
   .superRefine((d, ctx) => {
     // Solo se puede validar aquí cuando el payload trae categoría: un PATCH

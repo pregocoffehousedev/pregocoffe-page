@@ -30,6 +30,7 @@ type EventoRow = {
   entradas_vendidas: number
   max_por_compra: number
   activo: boolean
+  agotado: boolean
 }
 
 type ReservaRow = {
@@ -92,6 +93,7 @@ function seed() {
     entradas_vendidas: 0,
     max_por_compra: 6,
     activo: true,
+    agotado: false,
   }
   return { eventos: [evento], reservas: [], entradas: [], listaEspera: [] }
 }

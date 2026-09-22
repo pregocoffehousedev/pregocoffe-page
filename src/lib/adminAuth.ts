@@ -5,7 +5,11 @@ import { supabaseServer } from './supabase/server'
  * pueden entrar a /admin y llamar a los endpoints api/admin/* y api/validar,
  * sin importar que hayan iniciado sesión correctamente con Google.
  */
-const EMAILS_PERMITIDOS = ['pregocoffehousedev@gmail.com', 'info@pregocoffeehouse.com']
+const EMAILS_PERMITIDOS = [
+  'pregocoffehousedev@gmail.com',
+  'info@pregocoffeehouse.com',
+  'info@pregocoffeehouse.cl',
+]
 
 /**
  * Verifica que la petición venga de una sesión de Supabase Auth válida

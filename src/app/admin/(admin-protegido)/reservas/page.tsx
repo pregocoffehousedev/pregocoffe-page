@@ -448,7 +448,9 @@ function EnviarEntradasWhatsApp({
   codigos: string[]
 }) {
   const numero = telefono.replace(/\D/g, '')
-  const base = typeof window !== 'undefined' ? window.location.origin : ''
+  // Dominio fijo (no window.location.origin): si el admin confirma el pago
+  // con el panel abierto en localhost, el cliente recibiría un link roto.
+  const base = 'https://pregocoffeehouse.cl'
   const links = codigos.map((c) => `${base}/entrada/${c}`).join('\n')
   const mensaje = encodeURIComponent(
     `Hola ${nombre}! Confirmamos tu pago 🌿 Aquí ${codigos.length === 1 ? 'tu entrada' : 'tus entradas'} para ${eventoNombre}:\n\n${links}\n\nPreséntala en la puerta el día del evento.`,

@@ -25,7 +25,7 @@ export async function GET(req: Request) {
   let query = db
     .from('reservas')
     .select(
-      'id, evento_id, cantidad, monto_total_clp, comprador_nombre, comprador_telefono, estado, expira_en, pagada_en, creada_en, confirmada_por, eventos(nombre)',
+      'id, evento_id, cantidad, monto_total_clp, comprador_nombre, comprador_telefono, estado, expira_en, pagada_en, creada_en, confirmada_por, eventos(nombre), entradas(codigo)',
     )
     .order('creada_en', { ascending: false })
     .limit(200)

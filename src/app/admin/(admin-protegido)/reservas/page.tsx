@@ -18,6 +18,7 @@ type Reserva = {
   expira_en: string
   creada_en: string
   eventos: { nombre: string } | { nombre: string }[]
+  entradas?: { codigo: string }[]
 }
 
 type Cupo = {
@@ -264,7 +265,8 @@ export default function ReservasAdminPage() {
                 const evento = Array.isArray(r.eventos) ? r.eventos[0] : r.eventos
                 const restanteMs = new Date(r.expira_en).getTime() - ahora
                 const expirada = r.estado === 'pendiente' && restanteMs <= 0
-                const codigos = codigosPorReserva[r.id]
+                const codigos =
+                  codigosPorReserva[r.id] ?? r.entradas?.map((e) => e.codigo) ?? []
                 return (
                   <li key={r.id} className="rounded-xl border border-salvia-100 bg-white p-4 sm:p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">

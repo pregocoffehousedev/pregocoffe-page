@@ -29,8 +29,18 @@ export default function NavCarta({ categorias }: { categorias: readonly string[]
   }, [categorias])
 
   useEffect(() => {
-    const chipActivo = chipsRef.current?.querySelector<HTMLElement>(`[data-slug="${activa}"]`)
-    chipActivo?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' })
+    const contenedor = chipsRef.current
+    const chipActivo = contenedor?.querySelector<HTMLElement>(`[data-slug="${activa}"]`)
+    if (!contenedor || !chipActivo) return
+    // No usamos scrollIntoView: en Safari/iOS puede arrastrar el scroll
+    // VERTICAL de la página (no solo el horizontal de este contenedor) al
+    // intentar centrar el chip, dejando la página trabada al hacer scroll.
+    // Desplazamos manualmente solo el scroll horizontal del contenedor.
+    const offset =
+      chipActivo.offsetLeft -
+      contenedor.clientWidth / 2 +
+      chipActivo.clientWidth / 2
+    contenedor.scrollTo({ left: offset, behavior: 'smooth' })
   }, [activa])
 
   return (

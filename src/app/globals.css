@@ -15,6 +15,18 @@
   }
 }
 
+html {
+  /* Los links del nav usan anclas (#nosotros, #carta, etc.): sin esto el
+     navegador salta de golpe en vez de desplazarse suavemente. */
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 html,
 body {
   /* Red de seguridad: nada debe poder empujar la página a scrollear

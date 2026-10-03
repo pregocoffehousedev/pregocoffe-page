@@ -5,6 +5,7 @@ import DatosEstructurados from '@/components/DatosEstructurados'
 import BotonWhatsApp from '@/components/BotonWhatsApp'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
+import { obtenerBingoVigente } from '@/lib/bingoVigente'
 
 const oswald = Oswald({
   subsets: ['latin'],
@@ -16,6 +17,11 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 }
+
+// El header/footer deciden si mostrar "Entradas" según si el bingo ya
+// venció (ver obtenerBingoVigente abajo). Sin esto, páginas estáticas como
+// la home quedarían con ese valor congelado desde el último build.
+export const revalidate = 300
 
 const OG_IMAGE = {
   url: '/fotos/mosaico-platos.jpg',
@@ -46,14 +52,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const bingoVigenteInicial = await obtenerBingoVigente()
+
   return (
     <html lang="es-CL" className={oswald.variable}>
       <body>
         <DatosEstructurados />
-        <SiteHeader />
+        <SiteHeader bingoVigenteInicial={bingoVigenteInicial} />
         <main className="w-full px-5 py-10 sm:px-8 lg:px-12">{children}</main>
-        <SiteFooter />
+        <SiteFooter bingoVigenteInicial={bingoVigenteInicial} />
         <BotonWhatsApp />
       </body>
     </html>

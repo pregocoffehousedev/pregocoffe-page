@@ -6,9 +6,9 @@ import { useBingoVigente } from '@/lib/useBingoVigente'
 
 // Footer del sitio público. No se muestra en /admin: es contenido para
 // visitantes, no para el equipo gestionando el panel.
-export default function SiteFooter() {
+export default function SiteFooter({ bingoVigenteInicial }: { bingoVigenteInicial: boolean }) {
   const pathname = usePathname()
-  const bingoVigente = useBingoVigente()
+  const bingoVigente = useBingoVigente(bingoVigenteInicial)
   if (pathname.startsWith('/admin')) return null
 
   return (

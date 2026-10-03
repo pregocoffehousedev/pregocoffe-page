@@ -7,12 +7,12 @@ import { useBingoVigente } from '@/lib/useBingoVigente'
 // Header compartido. En /admin, el botón "Entradas" (irrelevante para el
 // equipo, ya que ahí mismo se gestionan los eventos) se reemplaza por
 // "Cerrar sesión", visible siempre arriba sin depender del scroll.
-export default function SiteHeader() {
+export default function SiteHeader({ bingoVigenteInicial }: { bingoVigenteInicial: boolean }) {
   const pathname = usePathname()
   const router = useRouter()
   const enAdmin = pathname.startsWith('/admin')
   const enInicioAdmin = pathname === '/admin'
-  const bingoVigente = useBingoVigente()
+  const bingoVigente = useBingoVigente(bingoVigenteInicial)
 
   async function cerrarSesion() {
     await supabaseBrowser().auth.signOut()

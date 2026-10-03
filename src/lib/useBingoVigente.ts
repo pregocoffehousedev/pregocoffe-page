@@ -5,8 +5,12 @@ import { useEffect, useState } from 'react'
 // ¿Hay un bingo activo cuya fecha aún no pasó? Lo usan el header y el
 // footer para ocultar los links a "Entradas" cuando ya no queda nada
 // que comprar (evita mandar a una página que solo dice "próximamente").
-export function useBingoVigente() {
-  const [vigente, setVigente] = useState(true)
+//
+// Recibe el valor ya resuelto por el servidor (ver layout.tsx) como estado
+// inicial, para que el primer render ya sea correcto y no haya parpadeo del
+// botón "Entradas" mientras se espera la respuesta del fetch.
+export function useBingoVigente(inicial: boolean) {
+  const [vigente, setVigente] = useState(inicial)
 
   useEffect(() => {
     let vivo = true

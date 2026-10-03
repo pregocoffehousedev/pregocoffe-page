@@ -68,21 +68,15 @@ body {
   mix-blend-mode: soft-light;
 }
 
-/* Iluminación del muro: foco arriba, sombra al pie */
+/* Iluminación del muro: sombra al pie (sin foco arriba, para no competir
+   con el logo) */
 .tile-wall::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(
-      130% 90% at 50% -8%,
-      rgba(255, 255, 255, 0.72) 0%,
-      rgba(255, 255, 255, 0.16) 42%,
-      transparent 68%
-    ),
-    linear-gradient(180deg, transparent 48%, rgba(28, 26, 22, 0.14) 100%);
+  background: linear-gradient(180deg, transparent 48%, rgba(28, 26, 22, 0.14) 100%);
 }
 
 /*

@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/adminAuth'
+import { obtenerBingoActivo } from '@/lib/bingoActivo'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-const SLUG_DEFAULT = process.env.NEXT_PUBLIC_EVENTO_SLUG || 'plantitas-y-cafe-4'
 
 // Panel admin: lista quién se anotó en la lista de espera del evento
 // activo, en orden de llegada (primero en anotarse, primero en la lista).
@@ -15,12 +14,7 @@ export async function GET() {
   }
 
   const db = supabaseAdmin()
-
-  const { data: evento } = await db
-    .from('eventos')
-    .select('id')
-    .eq('slug', SLUG_DEFAULT)
-    .single()
+  const evento = await obtenerBingoActivo()
 
   if (!evento) {
     return NextResponse.json({ listaEspera: [] })

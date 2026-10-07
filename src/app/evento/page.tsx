@@ -1,25 +1,13 @@
 import { redirect } from 'next/navigation'
-import { supabasePublic } from '@/lib/supabase'
+import { obtenerBingoActivo } from '@/lib/bingoActivo'
 
-// /evento sin slug: redirige al bingo activo por defecto, para no romper
-// los links existentes ("Comprar entradas" del header y del banner).
-// Cada evento individual vive en /evento/[slug].
-const SLUG_DEFAULT = process.env.NEXT_PUBLIC_EVENTO_SLUG || 'plantitas-y-cafe-4'
-
+// /evento sin slug: redirige al bingo activo detectado automáticamente,
+// para no romper los links existentes ("Comprar entradas" del header y
+// del banner). Cada evento individual vive en /evento/[slug].
 export default async function EventoIndexPage() {
-  let slugDestino = SLUG_DEFAULT
-  try {
-    const { data } = await supabasePublic()
-      .from('eventos')
-      .select('slug')
-      .eq('slug', SLUG_DEFAULT)
-      .eq('activo', true)
-      .single<{ slug: string }>()
+  const bingo = await obtenerBingoActivo()
 
-    if (data) slugDestino = data.slug
-  } catch (e) {
-    console.error('[evento] no se pudo resolver el evento por defecto:', e)
-  }
-
-  redirect(`/evento/${slugDestino}`)
+  // Sin ningún bingo activo no hay a dónde mandar con sentido: mejor la
+  // home (que ya oculta los links a "Entradas" en este caso) que un 404.
+  redirect(bingo ? `/evento/${bingo.slug}` : '/')
 }

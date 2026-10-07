@@ -78,7 +78,7 @@ const g = globalThis as unknown as {
 function seed() {
   const evento: EventoRow = {
     id: crypto.randomUUID(),
-    slug: process.env.NEXT_PUBLIC_EVENTO_SLUG || 'plantitas-y-cafe-4',
+    slug: 'plantitas-y-cafe-4',
     nombre: 'Plantitas & Café — Bingo de Plantas 4.0',
     descripcion:
       'Una tarde de bingo impartida por el equipo de Prego, con premios en plantas. Café de especialidad y pastelería disponibles para comprar aparte en el local.',

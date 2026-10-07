@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/adminAuth'
+import { obtenerBingoActivo } from '@/lib/bingoActivo'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const ESTADOS_VALIDOS = ['pendiente', 'pagada', 'expirada', 'cancelada'] as const
-const SLUG_DEFAULT = process.env.NEXT_PUBLIC_EVENTO_SLUG || 'plantitas-y-cafe-4'
 
 // Panel admin: lista TODAS las reservas (opcionalmente filtradas por estado
 // y/o evento), junto con el cupo disponible del evento activo — para saber
@@ -37,22 +37,14 @@ export async function GET(req: Request) {
     query = query.eq('evento_id', eventoId)
   }
 
-  const [{ data: reservas, error: errorReservas }, { data: evento, error: errorEvento }] =
-    await Promise.all([
-      query,
-      db
-        .from('eventos')
-        .select('capacidad_total, entradas_vendidas')
-        .eq('slug', SLUG_DEFAULT)
-        .single(),
-    ])
+  const [{ data: reservas, error: errorReservas }, evento] = await Promise.all([
+    query,
+    obtenerBingoActivo(),
+  ])
 
   if (errorReservas) {
     console.error('[admin/reservas] GET error', errorReservas)
     return NextResponse.json({ error: 'No pudimos cargar las reservas.' }, { status: 500 })
-  }
-  if (errorEvento) {
-    console.error('[admin/reservas] evento', errorEvento)
   }
 
   return NextResponse.json({

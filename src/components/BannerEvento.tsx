@@ -1,4 +1,5 @@
-import { supabasePublic, type Evento } from '@/lib/supabase'
+import { type Evento } from '@/lib/supabase'
+import { obtenerBingoActivo } from '@/lib/bingoActivo'
 import { clp, fechaLarga } from '@/lib/format'
 import DisponibilidadBanner from './DisponibilidadBanner'
 
@@ -6,26 +7,13 @@ function ventaAbierta(evento: Evento) {
   return !evento.venta_abre_en || new Date(evento.venta_abre_en).getTime() <= Date.now()
 }
 
-const SLUG = process.env.NEXT_PUBLIC_EVENTO_SLUG || 'plantitas-y-cafe-4'
-
 /**
  * Banner del próximo evento. Lee el estado real desde Supabase, así el
  * contador de cupos coincide con la página de compra.
  * Si la base no está configurada aún, cae a un texto genérico.
  */
 export default async function BannerEvento() {
-  let evento: Evento | null = null
-  try {
-    const { data } = await supabasePublic()
-      .from('eventos')
-      .select('*')
-      .eq('slug', SLUG)
-      .single<Evento>()
-    evento = data
-  } catch {
-    evento = null
-  }
-
+  const evento = await obtenerBingoActivo()
   const yaPaso = evento ? new Date(evento.fecha).getTime() < Date.now() : false
 
   if (!evento || yaPaso) {
